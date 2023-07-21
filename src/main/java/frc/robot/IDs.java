@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.I2C.Port;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
@@ -16,8 +18,10 @@ package frc.robot;
  * wherever the
  * constants are needed, to reduce verbosity.
  */
-public final class Constants {
+public final class IDs {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+  public static final Port AHRS_PORT_ID = Port.kMXP;
+
 }
