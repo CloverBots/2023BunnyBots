@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static frc.robot.constants.SwerveDriveConstants.SwerveModuleConfigurations;
+
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
@@ -12,82 +14,83 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.RobotController;
-import frc.robot.SwerveDriveConstants.SwerveModuleConfiguration;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.constants.SwerveDriveConstants;
 
-import static frc.robot.SwerveDriveConstants.SwerveModules;
-
-//**Need updated imports for the motors, encoders, and math inputs
-
-
+/**
+ * Represents a Swerve Module on the robot. Contains movement and turning functionality for the wheel.
+*/
 public class SwerveModule {
-
-
     private final TalonFX driveMotor;
     private final CANSparkMax turningMotor;
-    
     private final CANCoder turningEncoder;
 
-    private SwerveModuleConfiguration config;
+    protected SwerveModuleConfigurations config;
 
-    public SwerveModule(SwerveModules moduleInfo) {
-        this.config = moduleInfo.config;
+    private PIDController turningPidController;
 
-        driveMotor = new TalonFX(config.driveMotorID);
-        turningMotor = new CANSparkMax(config.turnMotorID, MotorType.kBrushless);
+    /**
+     * Constructs a new SwerveModule. 
+     * @param config The configuration for this module. This is how the SwerveModule gets its constants (Motor IDs, offsets, etc.)
+     */
+    public SwerveModule(SwerveModuleConfigurations config) {
+        this.config = config;
+        this.driveMotor = new TalonFX(config.driveMotorID);
+        this.turningMotor = new CANSparkMax(config.turnMotorID, MotorType.kBrushless);
+        this.turningEncoder = new CANCoder(config.CANCoderID);
         configureCANCoder(turningEncoder);
-        //driveEncoder.setPositionConversionFactor(ModuleConstants.kDriveEncoderRot2Meter);
-        //driveEncoder.setVelocityConversionFactor(ModuleConstants.kDriveEncoderRPM2MeterPerSec); if not using drive encoder
+        
+        // This makes getPosition() on the turning motor encoder give it's rotation in radians.
+        turningMotor.getEncoder().setPositionConversionFactor(SwerveDriveConstants.TURNING_ENCODER_TO_RAD);
+        // This makes getVelocity() on the turning motor encoder give its velocity in radians/second.
+        turningMotor.getEncoder().setVelocityConversionFactor(SwerveDriveConstants.TURNING_ENCODER_TO_RADS_PER_SECOND);
 
-        turningEncoder.setPositionConversionFactor(ModuleConstants.kTurningEncoderRot2Rad);
-        turningEncoder.setVelocityConversionFactor(ModuleConstants.kTurningEncoderRPM2RadPerSec); //Update for Encoder type
-
-        turningPidController = new PIDController(ModuleConstants.kPTurning, 0, 0);
+        driveMotor.setInverted(true);
+        turningMotor.setInverted(true);
+        turningPidController = new PIDController(
+            SwerveDriveConstants.kPTurning,
+            SwerveDriveConstants.kITurning,
+            SwerveDriveConstants.kDTurning
+        );
         turningPidController.enableContinuousInput(-Math.PI, Math.PI);
-
         resetEncoders();
     }
-    
-    //public double getDrivePosition() {
-      //  return driveEncoder.getPosition();
-   // }
-
     public double getTurningPosition() {
+        return turningMotor.getEncoder().getPosition();
+    }
+    public double getAbsolutePosition() {
         return turningEncoder.getAbsolutePosition();
     }
-
-   // public double getDriveVelocity() {
-    //    return driveEncoder.getVelocity();
-    //}
-
     public double getTurningVelocity() {
-        return turningEncoder.getVelocity();
+        return turningMotor.getEncoder().getVelocity();
     }
-
     public void resetEncoders() {
         driveMotor.setSelectedSensorPosition(0);
+        turningMotor.getEncoder().setPosition(Units.degreesToRadians(getAbsolutePosition()));
     }
-
-    public double getRPM() {
-        return driveMotor.getSelectedSensorVelocity();
+    public double getDriveVelocity() {
+        return driveMotor.getSelectedSensorVelocity() * SwerveDriveConstants.DRIVE_ENCODER_VELOCITY_TO_METERS_PER_SECOND;
     }
-
     public SwerveModuleState getState() {
         return new SwerveModuleState(
             driveMotor.getSelectedSensorVelocity(), new Rotation2d(getTurningPosition()));
     }
-
+    public SwerveModulePosition getPosition() {
+        return new SwerveModulePosition(
+            driveMotor.getSelectedSensorPosition() * SwerveDriveConstants.DRIVE_ENCODER_TO_METERS, new Rotation2d(getTurningPosition()));
+    }
     public void setDesiredState(SwerveModuleState state) {
         if (Math.abs(state.speedMetersPerSecond) < 0.001) {
             stop();
             return;
         }
         state = SwerveModuleState.optimize(state, getState().angle);
-        driveMotor.set(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
+        driveMotor.set(TalonFXControlMode.PercentOutput, state.speedMetersPerSecond / SwerveDriveConstants.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
         turningMotor.set(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));
-        SmartDashboard.putString("Swerve[" + absoluteEncoder.getChannel() + "] state", state.toString());
+        SmartDashboard.putString("Swerve[" + config.name() + "] state", state.toString());
     }
 
     public void stop() {
@@ -96,12 +99,12 @@ public class SwerveModule {
     }
 
     private void configureCANCoder(CANCoder cancoder) {
-        CANCoderConfiguration config = new CANCoderConfiguration();
-        config.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
-        config.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
-        config.magnetOffsetDegrees = 0;
-        config.sensorTimeBase = SensorTimeBase.PerSecond;
-        cancoder.configAllSettings(config);
+        CANCoderConfiguration encoderConfig = new CANCoderConfiguration();
+        encoderConfig.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
+        encoderConfig.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
+        encoderConfig.magnetOffsetDegrees = config.encoderOffset;
+        encoderConfig.sensorTimeBase = SensorTimeBase.PerSecond;
+        cancoder.configAllSettings(encoderConfig);
     }
 
 }
