@@ -88,6 +88,13 @@ public class SwerveSubsystem extends SubsystemBase {
         }
         SmartDashboard.putNumber("Robot Heading", getHeading());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
+
+        // Monitor absolute encoder values for configuration
+        double[] angleValues = new double[4];
+        for (int i=0; i<modules.length; i++) {
+            angleValues[i] = modules[i].getAbsolutePosition();
+        }
+        SmartDashboard.putNumberArray("Swerve Module Encoders", angleValues);
     }
     
     public void stopModules() {
