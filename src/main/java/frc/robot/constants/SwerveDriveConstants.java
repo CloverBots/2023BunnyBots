@@ -13,7 +13,7 @@ public class SwerveDriveConstants {
     public static final double WHEEL_CIRCUMFERENCE = Units.inchesToMeters(4) * Math.PI;
 
     /** The driving gear ratio for the swerve module (MK4i L3). This is how many times the drive motor has to turn in order for the wheel to make 1 rotation. */
-    public static final double DRIVE_GEAR_RATIO = 6.12;
+    public static final double DRIVE_GEAR_RATIO = (50.0 / 14.0) * (16.0 / 28.0) * (45.0 / 15.0);
 
     /** The driving gear ratio for the Swerve Module (MK4i). This is how many times the turning motor has to turn in order for the module to make 1 full rotation. */
     public static final double TURNING_GEAR_RATIO = 150.0/7.0;
@@ -27,7 +27,7 @@ public class SwerveDriveConstants {
     public static final double TELEOP_MAX_SPEED_METERS_PER_SECOND = 1;
 
     /** The PHYSICAL maximum speed of the robot, if all motors were running at max power. */
-    public static final double PHYSICAL_MAX_SPEED_METERS_PER_SECOND = 10;
+    public static final double PHYSICAL_MAX_SPEED_METERS_PER_SECOND = (1/DRIVE_GEAR_RATIO) * (6380.0/60) * WHEEL_CIRCUMFERENCE;
 
     /** Maximum speed for the robot's turning. */
     public static final double teleOpMaxAngularSpeed = 1 * (2 * Math.PI);
