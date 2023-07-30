@@ -90,7 +90,7 @@ public class SwerveModule {
         state = SwerveModuleState.optimize(state, getState().angle);
         driveMotor.set(TalonFXControlMode.PercentOutput, state.speedMetersPerSecond / SwerveDriveConstants.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
         turningMotor.set(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));
-        SmartDashboard.putString("Swerve[" + config.name() + "] state", state.toString());
+        SmartDashboard.putString("Swerve[" + config.name() + "] desired state", state.toString());
     }
 
     public void stop() {

@@ -86,15 +86,18 @@ public class SwerveSubsystem extends SubsystemBase {
         for (int i = 0; i<4; i++) {
             modules[i].setDesiredState(states[i]);
         }
-        SmartDashboard.putNumber("Robot Heading", getHeading());
-        SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
+        SmartDashboard.putNumber("Gyro Heading", getHeading());
+        SmartDashboard.putNumber("Gyro Roll", gyro.getRoll());
+        SmartDashboard.putNumber("Gyro Pitch", gyro.getPitch());
+
+        SmartDashboard.putString("Odometer Robot Location", getPose().getTranslation().toString());
 
         // Monitor absolute encoder values for configuration
         double[] angleValues = new double[4];
         for (int i=0; i<modules.length; i++) {
             angleValues[i] = modules[i].getAbsolutePosition();
         }
-        SmartDashboard.putNumberArray("Swerve Module Encoders", angleValues);
+        SmartDashboard.putNumberArray("Swerve Absolute Encoders", angleValues);
     }
     
     public void stopModules() {
