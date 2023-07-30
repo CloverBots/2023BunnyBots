@@ -33,6 +33,8 @@ public class SwerveDriveConstants {
     public static final double teleOpMaxAngularSpeed = 1 * (2 * Math.PI);
     /** The maximum angular acceleration for the robot's turning. */
     public static final double teleOpMaxAngularAccelerationUnitsPerSecond = 3;
+    /** The maximum acceleration for the robot's X and Y movement. */
+    public static final double teleOpMaxAccelerationMetersPerSecond = 0.5;
 
     /** Multiply the output of {@code getSelectedSensorPosition()} by this to get the total distance travelled, in meters, on a swerve module. */
     public static final double DRIVE_ENCODER_TO_METERS = (WHEEL_CIRCUMFERENCE / (DRIVE_GEAR_RATIO * 2048.0));

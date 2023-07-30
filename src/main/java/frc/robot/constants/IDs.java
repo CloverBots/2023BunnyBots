@@ -14,4 +14,8 @@ public final class IDs {
   public static final int driverControllerPort = 0;
   public static final Port AHRS_PORT_ID = Port.kMXP;
 
+  // Port IDs for the controllers
+  public static final int CONTROLLER_DRIVE_PORT = 0;
+  public static final int CONTROLLER_OPERATOR_PORT = 1;
+
 }
