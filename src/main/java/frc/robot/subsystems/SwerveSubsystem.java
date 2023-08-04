@@ -52,6 +52,13 @@ public class SwerveSubsystem extends SubsystemBase {
             } catch (Exception e) {
             }
         }).start();
+        this.modules = new SwerveModule[4];
+        this.states = new SwerveModuleState[] {
+            new SwerveModuleState(),
+            new SwerveModuleState(),
+            new SwerveModuleState(),
+            new SwerveModuleState()
+        };
         // Initializes each swerve module
         for (int i=0; i<4; i++) {
             modules[i] = new SwerveModule(SwerveModuleConfigurations.values()[i]);
@@ -95,9 +102,9 @@ public class SwerveSubsystem extends SubsystemBase {
         // Monitor absolute encoder values for configuration
         double[] angleValues = new double[4];
         for (int i=0; i<modules.length; i++) {
-            angleValues[i] = modules[i].getAbsolutePosition();
+            SmartDashboard.putNumber(SwerveDriveConstants.SwerveModuleConfigurations.values()[i].name(), modules[i].getAbsolutePosition());
         }
-        SmartDashboard.putNumberArray("Swerve Absolute Encoders", angleValues);
+        
     }
     
     public void stopModules() {

@@ -55,10 +55,10 @@ public class SwerveDriveConstants {
      * Contains the configuration info for each swerve module.
      */
     public static enum SwerveModuleConfigurations {
-        FRONT_LEFT(10, 14, 18, 0),
-        FRONT_RIGHT(11, 15, 19, 0),
-        BACK_LEFT(12, 16, 20, 0),
-        BACK_RIGHT(13, 17, 21, 0);
+        FRONT_LEFT(10, 14, 18, 63.105),
+        FRONT_RIGHT(11, 15, 19, 241.611),
+        BACK_RIGHT(12, 16, 20, 4.043),
+        BACK_LEFT(13, 17, 21, 120.762);
 
         public int driveMotorID;
         public int turnMotorID;
