@@ -8,6 +8,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.IDs;
@@ -71,7 +72,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public double getHeading() {
         // Because the NavX gives headings from -180 to 180 degrees, we need to convert it to a range of 0 to 360 degrees.
-        return Math.IEEEremainder(gyro.getAngle(), 360);
+        // negative because we need CCW = positive
+        return Math.IEEEremainder(-gyro.getAngle(), 360);
     }
 
     public Rotation2d getRotation2d() {
@@ -102,7 +104,12 @@ public class SwerveSubsystem extends SubsystemBase {
         // Monitor absolute encoder values for configuration
         double[] angleValues = new double[4];
         for (int i=0; i<modules.length; i++) {
-            SmartDashboard.putNumber(SwerveDriveConstants.SwerveModuleConfigurations.values()[i].name(), modules[i].getAbsolutePosition());
+            SmartDashboard.putNumber("abs "+SwerveDriveConstants.SwerveModuleConfigurations.values()[i].name(), modules[i].getAbsolutePosition());
+        }
+        // Monitor encoder values for configuration
+        angleValues = new double[4];
+        for (int i=0; i<modules.length; i++) {
+            SmartDashboard.putNumber(SwerveDriveConstants.SwerveModuleConfigurations.values()[i].name(), Units.radiansToDegrees(modules[i].getTurningPosition()));
         }
         
     }

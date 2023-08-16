@@ -9,6 +9,7 @@ import frc.robot.commands.DriveFromControllerCommand;
 import frc.robot.constants.IDs;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -31,6 +32,7 @@ public class RobotContainer {
       driverController::getLeftX,
       driverController::getLeftY,
       driverController::getRightX,
+
       () -> true);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -40,6 +42,9 @@ public class RobotContainer {
     configureBindings();
   }
 
+  public void resetGyro() {
+    swerveSubsystem.zeroHeading();
+  }
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
@@ -50,7 +55,6 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-
   }
 
   /**

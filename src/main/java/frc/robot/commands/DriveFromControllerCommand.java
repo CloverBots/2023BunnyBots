@@ -51,6 +51,11 @@ public class DriveFromControllerCommand extends CommandBase {
         ySpeed = Math.abs(ySpeed) > CONTROLLER_DEADZONE ? ySpeed : 0.0;
         turningSpeed = Math.abs(turningSpeed) > CONTROLLER_DEADZONE ? turningSpeed : 0.0;
 
+
+        xSpeed = Math.pow(xSpeed, 3);
+        ySpeed = Math.pow(ySpeed, 3);
+        turningSpeed = Math.pow(turningSpeed, 5);
+
         // Limit the acceleration for moving and rotation using the rate limiters
         // Using the rate limited value from 0 to 1, this will make a value of 1 move the robot at the configured maximum speed
         xSpeed = xLimiter.calculate(xSpeed) * SwerveDriveConstants.TELEOP_MAX_SPEED_METERS_PER_SECOND;
@@ -64,11 +69,11 @@ public class DriveFromControllerCommand extends CommandBase {
             // Driving will be relative to field.
             // If this is enabled, then pressing forward will always move the robot forward, no matter its rotation.
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                    xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
+                    ySpeed, xSpeed, turningSpeed, swerveSubsystem.getRotation2d());
         } else {
             // Driving will be relative to the robot.
             // If this is enabled, then pressing forward will move the robot in the direction that it is currently facing.
-            chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
+            chassisSpeeds = new ChassisSpeeds(ySpeed, xSpeed, turningSpeed);
         }
 
         // This will take the speeds that we want our robot to move and turn at, and calculate the required direction and speed for each swerve module on the robot.

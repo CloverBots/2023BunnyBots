@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import static frc.robot.constants.SwerveDriveConstants.SwerveModuleConfigurations;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
@@ -41,6 +42,7 @@ public class SwerveModule {
         this.driveMotor = new TalonFX(config.driveMotorID);
         this.turningMotor = new CANSparkMax(config.turnMotorID, MotorType.kBrushless);
         this.turningEncoder = new CANCoder(config.CANCoderID);
+        this.driveMotor.setNeutralMode(NeutralMode.Brake);
         configureCANCoder(turningEncoder);
         
         // This makes getPosition() on the turning motor encoder give it's rotation in radians.
@@ -48,7 +50,7 @@ public class SwerveModule {
         // This makes getVelocity() on the turning motor encoder give its velocity in radians/second.
         turningMotor.getEncoder().setVelocityConversionFactor(SwerveDriveConstants.TURNING_ENCODER_TO_RADS_PER_SECOND);
 
-        driveMotor.setInverted(true);
+        driveMotor.setInverted(config.driveInverted);
         turningMotor.setInverted(true);
         turningPidController = new PIDController(
             SwerveDriveConstants.kPTurning,
@@ -59,7 +61,8 @@ public class SwerveModule {
         resetEncoders();
     }
     public double getTurningPosition() {
-        return turningMotor.getEncoder().getPosition();
+        // return turningMotor.getEncoder().getPosition();
+        return Units.degreesToRadians(getAbsolutePosition());
     }
     public double getAbsolutePosition() {
         return turningEncoder.getAbsolutePosition();

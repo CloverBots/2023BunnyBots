@@ -24,17 +24,17 @@ public class SwerveDriveConstants {
     public static final double trackWidth = Units.inchesToMeters(24);
 
     /** The maximum speed of the robot, in meters per second during TeleOp. Use this to limit the speed when using a controller.*/
-    public static final double TELEOP_MAX_SPEED_METERS_PER_SECOND = 1;
+    public static final double TELEOP_MAX_SPEED_METERS_PER_SECOND = 20;
 
     /** The PHYSICAL maximum speed of the robot, if all motors were running at max power. */
     public static final double PHYSICAL_MAX_SPEED_METERS_PER_SECOND = (1/DRIVE_GEAR_RATIO) * (6380.0/60) * WHEEL_CIRCUMFERENCE;
 
     /** Maximum speed for the robot's turning. */
-    public static final double teleOpMaxAngularSpeed = 1 * (2 * Math.PI);
+    public static final double teleOpMaxAngularSpeed = 20 * (2 * Math.PI);
     /** The maximum angular acceleration for the robot's turning. */
-    public static final double teleOpMaxAngularAccelerationUnitsPerSecond = 3;
+    public static final double teleOpMaxAngularAccelerationUnitsPerSecond = 5;
     /** The maximum acceleration for the robot's X and Y movement. */
-    public static final double teleOpMaxAccelerationMetersPerSecond = 0.5;
+    public static final double teleOpMaxAccelerationMetersPerSecond = 5;
 
     /** Multiply the output of {@code getSelectedSensorPosition()} by this to get the total distance travelled, in meters, on a swerve module. */
     public static final double DRIVE_ENCODER_TO_METERS = (WHEEL_CIRCUMFERENCE / (DRIVE_GEAR_RATIO * 2048.0));
@@ -55,21 +55,23 @@ public class SwerveDriveConstants {
      * Contains the configuration info for each swerve module.
      */
     public static enum SwerveModuleConfigurations {
-        FRONT_LEFT(10, 14, 18, 63.105),
-        FRONT_RIGHT(11, 15, 19, 241.611),
-        BACK_RIGHT(12, 16, 20, 4.043),
-        BACK_LEFT(13, 17, 21, 120.762);
+        FRONT_LEFT(10, 14, 18, -62.92, true),
+        FRONT_RIGHT(11, 15, 19, -241.35, false),
+        BACK_RIGHT(12, 16, 20, -112.58, false),
+        BACK_LEFT(13, 17, 21, -3.69, true);
 
         public int driveMotorID;
         public int turnMotorID;
         public int CANCoderID;
         public double encoderOffset;
+        public boolean driveInverted;
 
-        private SwerveModuleConfigurations(int driveMotorID, int turnMotorID, int CANCoderID, double encoderOffset) {
+        private SwerveModuleConfigurations(int driveMotorID, int turnMotorID, int CANCoderID, double encoderOffset, boolean driveInverted) {
             this.driveMotorID = driveMotorID;
             this.turnMotorID = turnMotorID;
             this.CANCoderID = CANCoderID;
             this.encoderOffset = encoderOffset;
+            this.driveInverted = driveInverted;
         }
     }
 
@@ -77,8 +79,8 @@ public class SwerveDriveConstants {
      * This calculates the exact speed and rotation of every swerve module needed to make the robot go in a specific direction and rotation.
      */
     public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
-        new Translation2d(wheelBase / 2, -trackWidth / 2),
         new Translation2d(wheelBase / 2, trackWidth / 2),
+        new Translation2d(wheelBase / 2, -trackWidth / 2),
         new Translation2d(-wheelBase / 2, -trackWidth / 2),
         new Translation2d(-wheelBase / 2, trackWidth / 2)
     );
