@@ -53,6 +53,8 @@ public class SwerveSubsystem extends SubsystemBase {
             } catch (Exception e) {
             }
         }).start();
+        SmartDashboard.putBoolean("reset gyro", false);
+        SmartDashboard.putBoolean("resync turn encoders", false);
         this.modules = new SwerveModule[4];
         this.states = new SwerveModuleState[] {
             new SwerveModuleState(),
@@ -101,6 +103,16 @@ public class SwerveSubsystem extends SubsystemBase {
 
         SmartDashboard.putString("Odometer Robot Location", getPose().getTranslation().toString());
 
+        if (SmartDashboard.getBoolean("reset gyro", false)) {
+            SmartDashboard.putBoolean("reset gyro", false);
+            zeroHeading();
+        }
+        if (SmartDashboard.getBoolean("resync turn encoders", false)){
+            SmartDashboard.putBoolean("resync turn encoders", false);
+            for (SwerveModule module : modules) {
+                module.resetTurnEncoder();
+            }
+        }
         // Monitor absolute encoder values for configuration
         double[] angleValues = new double[4];
         for (int i=0; i<modules.length; i++) {

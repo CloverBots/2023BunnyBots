@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.SwerveDriveConstants;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -13,22 +14,26 @@ public class DriveFromControllerCommand extends CommandBase {
 
     private final SwerveSubsystem swerveSubsystem;
     private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction;
-    private final Supplier<Boolean> fieldOrientedFunction;
+    private final Supplier<Boolean> yButtSupplier, bButtSupplier;
     private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
-
+    private boolean fieldOriented = true;
     private final double CONTROLLER_DEADZONE = 0.05;
+    private boolean lastPressedBoth = false;
 
     public DriveFromControllerCommand(
             SwerveSubsystem swerveSubsystem,
             Supplier<Double> xSpdFunction,
             Supplier<Double> ySpdFunction,
             Supplier<Double> turningSpdFunction,
+            Supplier<Boolean> yButtSupplier,
+            Supplier<Boolean> bButtSupplier,
             Supplier<Boolean> fieldOrientedFunction) {
         this.swerveSubsystem = swerveSubsystem;
         this.xSpdFunction = xSpdFunction;
         this.ySpdFunction = ySpdFunction;
         this.turningSpdFunction = turningSpdFunction;
-        this.fieldOrientedFunction = fieldOrientedFunction;
+        this.yButtSupplier = yButtSupplier;
+        this.bButtSupplier = bButtSupplier;
         this.xLimiter = new SlewRateLimiter(SwerveDriveConstants.TELEOP_MAX_SPEED_METERS_PER_SECOND);
         this.yLimiter = new SlewRateLimiter(SwerveDriveConstants.TELEOP_MAX_SPEED_METERS_PER_SECOND);
         this.turningLimiter = new SlewRateLimiter(SwerveDriveConstants.teleOpMaxAngularAccelerationUnitsPerSecond);
@@ -41,6 +46,7 @@ public class DriveFromControllerCommand extends CommandBase {
 
     @Override
     public void execute() {
+        
         // Get real-time controller inputs
         double xSpeed = xSpdFunction.get();
         double ySpeed = ySpdFunction.get();
@@ -62,10 +68,15 @@ public class DriveFromControllerCommand extends CommandBase {
         ySpeed = yLimiter.calculate(ySpeed) * SwerveDriveConstants.TELEOP_MAX_SPEED_METERS_PER_SECOND;
         turningSpeed = turningLimiter.calculate(turningSpeed)
                 * SwerveDriveConstants.teleOpMaxAngularSpeed;
-
+        
+        if (yButtSupplier.get() && bButtSupplier.get() && lastPressedBoth == false) {
+            fieldOriented = !fieldOriented;
+        }
+        lastPressedBoth = yButtSupplier.get() && bButtSupplier.get();
+        SmartDashboard.putBoolean("Field Oriented", fieldOriented);
         // Construct a ChassisSpeeds object, which will contain the movement and rotation speeds that we want our robot to do.
         ChassisSpeeds chassisSpeeds;
-        if (fieldOrientedFunction.get()) {
+        if (fieldOriented) {
             // Driving will be relative to field.
             // If this is enabled, then pressing forward will always move the robot forward, no matter its rotation.
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(

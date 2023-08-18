@@ -61,8 +61,13 @@ public class SwerveModule {
         resetEncoders();
     }
     public double getTurningPosition() {
-        // return turningMotor.getEncoder().getPosition();
-        return Units.degreesToRadians(getAbsolutePosition());
+        double pos = turningMotor.getEncoder().getPosition();
+        boolean sign = pos < 0;
+        //SmartDashboard.putNumber("posBefore "+config.name(), Units.radiansToDegrees(pos));
+        pos = Math.abs(pos);
+        pos = pos % (2*Math.PI);
+        if (sign) pos = (2*Math.PI) - pos;
+        return pos;
     }
     public double getAbsolutePosition() {
         return turningEncoder.getAbsolutePosition();
@@ -72,6 +77,9 @@ public class SwerveModule {
     }
     public void resetEncoders() {
         driveMotor.setSelectedSensorPosition(0);
+        turningMotor.getEncoder().setPosition(Units.degreesToRadians(getAbsolutePosition()));
+    }
+    public void resetTurnEncoder() {
         turningMotor.getEncoder().setPosition(Units.degreesToRadians(getAbsolutePosition()));
     }
     public double getDriveVelocity() {
