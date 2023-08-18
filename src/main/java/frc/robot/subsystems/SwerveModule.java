@@ -82,6 +82,9 @@ public class SwerveModule {
     public void resetTurnEncoder() {
         turningMotor.getEncoder().setPosition(Units.degreesToRadians(getAbsolutePosition()));
     }
+    public void resetDriveEncoder() {
+        driveMotor.setSelectedSensorPosition(0);
+    }
     public double getDriveVelocity() {
         return driveMotor.getSelectedSensorVelocity() * SwerveDriveConstants.DRIVE_ENCODER_VELOCITY_TO_METERS_PER_SECOND;
     }

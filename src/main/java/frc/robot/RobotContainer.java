@@ -11,6 +11,7 @@ import frc.robot.constants.IDs;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.event.EventLoop;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -27,6 +28,8 @@ public class RobotContainer {
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   
   private final XboxController driverController = new XboxController(IDs.CONTROLLER_DRIVE_PORT);
+  private final SendableChooser<Command> chooser = new SendableChooser<>();
+
 
   private final DriveFromControllerCommand driveFromControllerCommand = 
     new DriveFromControllerCommand(
@@ -39,19 +42,21 @@ public class RobotContainer {
       () -> true);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
     swerveSubsystem.setDefaultCommand(driveFromControllerCommand);
-    
+    configureAutoChooser();
     // Configure the trigger bindings
     configureBindings();
   }
 
-  public void onInit() {
+  public void onEnable() {
     swerveSubsystem.onEnable();
   }
 
   public void resetGyro() {
     swerveSubsystem.zeroHeading();
+  }
+  private void configureAutoChooser() {
+    chooser.setDefaultOption("Dive Distance", new DriveToDistanceCommand(swerveSubsystem, 1));
   }
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
@@ -71,6 +76,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new DriveToDistanceCommand(swerveSubsystem, 1);
+    return chooser.getSelected();
   }
 }

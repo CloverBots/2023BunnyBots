@@ -71,11 +71,11 @@ public class SwerveSubsystem extends SubsystemBase {
     public void onEnable() {
         SmartDashboard.putBoolean("reset gyro", false);
         SmartDashboard.putBoolean("resync turn encoders", false);
+        resetTurnEncoders();
     }
     public void zeroHeading() {
         gyro.reset();
     }
-
     public double getHeading() {
         // Because the NavX gives headings from -180 to 180 degrees, we need to convert it to a range of 0 to 360 degrees.
         // negative because we need CCW = positive
@@ -92,6 +92,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public void resetOdometry(Pose2d pose) {
         odometer.resetPosition(getRotation2d(), getModulePositions(), pose);
+    }
+    public void resetOdometry() {
+        odometer.resetPosition(getRotation2d(), getModulePositions(), new Pose2d());
     }
     public void setSpeed(double vx, double vy, double omegaRadsPerSecond, boolean fieldOriented) {
         // Construct a ChassisSpeeds object, which will contain the movement and rotation speeds that we want our robot to do.
@@ -135,23 +138,28 @@ public class SwerveSubsystem extends SubsystemBase {
         }
         if (SmartDashboard.getBoolean("resync turn encoders", false)){
             SmartDashboard.putBoolean("resync turn encoders", false);
-            for (SwerveModule module : modules) {
-                module.resetTurnEncoder();
-            }
+            resetTurnEncoders();
         }
         // Monitor absolute encoder values for configuration
-        double[] angleValues = new double[4];
         for (int i=0; i<modules.length; i++) {
             SmartDashboard.putNumber("abs "+SwerveDriveConstants.SwerveModuleConfigurations.values()[i].name(), modules[i].getAbsolutePosition());
         }
         // Monitor encoder values for configuration
-        angleValues = new double[4];
         for (int i=0; i<modules.length; i++) {
             SmartDashboard.putNumber(SwerveDriveConstants.SwerveModuleConfigurations.values()[i].name(), Units.radiansToDegrees(modules[i].getTurningPosition()));
         }
         
     }
-    
+    public void resetTurnEncoders() {
+        for (SwerveModule module : modules) {
+            module.resetTurnEncoder();
+        }
+    }
+    public void resetDriveEncoders() {
+        for (SwerveModule module : modules) {
+            module.resetDriveEncoder();
+        }
+    }
     public void stopModules() {
         for (SwerveModule module : modules) {
             module.stop();
