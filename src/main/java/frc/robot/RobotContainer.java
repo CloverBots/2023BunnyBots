@@ -6,10 +6,12 @@ package frc.robot;
 
 import frc.robot.commands.Autos;
 import frc.robot.commands.DriveFromControllerCommand;
+import frc.robot.commands.DriveToDistanceCommand;
 import frc.robot.constants.IDs;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.event.EventLoop;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -39,8 +41,13 @@ public class RobotContainer {
   public RobotContainer() {
 
     swerveSubsystem.setDefaultCommand(driveFromControllerCommand);
+    
     // Configure the trigger bindings
     configureBindings();
+  }
+
+  public void onInit() {
+    swerveSubsystem.onEnable();
   }
 
   public void resetGyro() {
@@ -64,6 +71,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return null;
+    return new DriveToDistanceCommand(swerveSubsystem, 1);
   }
 }

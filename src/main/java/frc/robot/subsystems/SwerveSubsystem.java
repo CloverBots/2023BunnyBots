@@ -4,6 +4,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -67,7 +68,10 @@ public class SwerveSubsystem extends SubsystemBase {
             modules[i] = new SwerveModule(SwerveModuleConfigurations.values()[i]);
         }
     }
-
+    public void onEnable() {
+        SmartDashboard.putBoolean("reset gyro", false);
+        SmartDashboard.putBoolean("resync turn encoders", false);
+    }
     public void zeroHeading() {
         gyro.reset();
     }
@@ -89,6 +93,28 @@ public class SwerveSubsystem extends SubsystemBase {
     public void resetOdometry(Pose2d pose) {
         odometer.resetPosition(getRotation2d(), getModulePositions(), pose);
     }
+    public void setSpeed(double vx, double vy, double omegaRadsPerSecond, boolean fieldOriented) {
+        // Construct a ChassisSpeeds object, which will contain the movement and rotation speeds that we want our robot to do.
+        SmartDashboard.putNumber("vx", vx);
+        SmartDashboard.putNumber("vy", vy);
+        ChassisSpeeds chassisSpeeds;
+        if (fieldOriented) {
+            // Driving will be relative to field.
+            // If this is enabled, then pressing forward will always move the robot forward, no matter its rotation.
+            chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                    vx, vy, omegaRadsPerSecond, getRotation2d());
+        } else {
+            // Driving will be relative to the robot.
+            // If this is enabled, then pressing forward will move the robot in the direction that it is currently facing.
+            chassisSpeeds = new ChassisSpeeds(vx, vy, omegaRadsPerSecond);
+        }
+
+        // This will take the speeds that we want our robot to move and turn at, and calculate the required direction and speed for each swerve module on the robot.
+        SwerveModuleState[] moduleStates = SwerveDriveConstants.swerveKinematics.toSwerveModuleStates(chassisSpeeds);
+        
+        // Set the swerve modules to their required states.
+        setModuleStates(moduleStates);
+    }
 
     @Override
     public void periodic() {
@@ -98,8 +124,8 @@ public class SwerveSubsystem extends SubsystemBase {
             modules[i].setDesiredState(states[i]);
         }
         SmartDashboard.putNumber("Gyro Heading", getHeading());
-        SmartDashboard.putNumber("Gyro Roll", gyro.getRoll());
-        SmartDashboard.putNumber("Gyro Pitch", gyro.getPitch());
+        //SmartDashboard.putNumber("Gyro Roll", gyro.getRoll());
+        //SmartDashboard.putNumber("Gyro Pitch", gyro.getPitch());
 
         SmartDashboard.putString("Odometer Robot Location", getPose().getTranslation().toString());
 

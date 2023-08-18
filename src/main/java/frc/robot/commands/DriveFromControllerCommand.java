@@ -74,24 +74,10 @@ public class DriveFromControllerCommand extends CommandBase {
         }
         lastPressedBoth = yButtSupplier.get() && bButtSupplier.get();
         SmartDashboard.putBoolean("Field Oriented", fieldOriented);
-        // Construct a ChassisSpeeds object, which will contain the movement and rotation speeds that we want our robot to do.
-        ChassisSpeeds chassisSpeeds;
-        if (fieldOriented) {
-            // Driving will be relative to field.
-            // If this is enabled, then pressing forward will always move the robot forward, no matter its rotation.
-            chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                    ySpeed, xSpeed, turningSpeed, swerveSubsystem.getRotation2d());
-        } else {
-            // Driving will be relative to the robot.
-            // If this is enabled, then pressing forward will move the robot in the direction that it is currently facing.
-            chassisSpeeds = new ChassisSpeeds(ySpeed, xSpeed, turningSpeed);
-        }
-
-        // This will take the speeds that we want our robot to move and turn at, and calculate the required direction and speed for each swerve module on the robot.
-        SwerveModuleState[] moduleStates = SwerveDriveConstants.swerveKinematics.toSwerveModuleStates(chassisSpeeds);
         
-        // Set the swerve modules to their required states.
-        swerveSubsystem.setModuleStates(moduleStates);
+
+        swerveSubsystem.setSpeed(ySpeed, xSpeed, turningSpeed, fieldOriented);
+        
     }
 
     @Override
