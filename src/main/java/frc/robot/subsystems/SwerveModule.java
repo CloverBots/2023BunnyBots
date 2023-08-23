@@ -96,6 +96,9 @@ public class SwerveModule {
         return new SwerveModulePosition(
             driveMotor.getSelectedSensorPosition() * SwerveDriveConstants.DRIVE_ENCODER_TO_METERS, new Rotation2d(getTurningPosition()));
     }
+    public double getDriveMotorPosition() {
+        return driveMotor.getSelectedSensorPosition() * SwerveDriveConstants.DRIVE_ENCODER_TO_METERS;
+    }
     public void setDesiredState(SwerveModuleState state) {
         if (Math.abs(state.speedMetersPerSecond) < 0.001) {
             stop();

@@ -9,6 +9,7 @@ import frc.robot.commands.DriveFromControllerCommand;
 import frc.robot.commands.DriveToDistanceCommand;
 import frc.robot.constants.IDs;
 import frc.robot.subsystems.SwerveSubsystem;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -56,7 +57,8 @@ public class RobotContainer {
     swerveSubsystem.zeroHeading();
   }
   private void configureAutoChooser() {
-    chooser.setDefaultOption("Dive Distance", new DriveToDistanceCommand(swerveSubsystem, 1));
+    chooser.setDefaultOption("Dive Distance", new DriveToDistanceCommand(swerveSubsystem, 
+    (-1)));
   }
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the

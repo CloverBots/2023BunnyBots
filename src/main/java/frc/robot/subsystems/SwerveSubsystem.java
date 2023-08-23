@@ -148,6 +148,9 @@ public class SwerveSubsystem extends SubsystemBase {
         for (int i=0; i<modules.length; i++) {
             SmartDashboard.putNumber(SwerveDriveConstants.SwerveModuleConfigurations.values()[i].name(), Units.radiansToDegrees(modules[i].getTurningPosition()));
         }
+        // for (int i=0; i<modules.length; i++) {
+        //     SmartDashboard.putNumber("talon "+SwerveDriveConstants.SwerveModuleConfigurations.values()[i].name(), Units.radiansToDegrees(modules[i].getDriveMotorPosition()));
+        // }
         
     }
     public void resetTurnEncoders() {

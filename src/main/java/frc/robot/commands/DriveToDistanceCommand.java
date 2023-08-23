@@ -13,12 +13,12 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 public class DriveToDistanceCommand extends CommandBase {
   private SwerveSubsystem swerveSubsystem;
-  private final float distanceMeters;
+  private final double distanceMeters;
 
-  private PIDController driveDistanceController = new PIDController(1, 0, 0);
+  private PIDController driveDistanceController = new PIDController(7.0, 0, 0.4);
 
   /** Creates a new DriveToDistanceCommand. */
-  public DriveToDistanceCommand(SwerveSubsystem swerveSubsystem, float distanceMeters) {
+  public DriveToDistanceCommand(SwerveSubsystem swerveSubsystem, double distanceMeters) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerveSubsystem);
     this.swerveSubsystem = swerveSubsystem;
@@ -36,6 +36,7 @@ public class DriveToDistanceCommand extends CommandBase {
   @Override
   public void execute() {
     double xSpeed = driveDistanceController.calculate(swerveSubsystem.getPose().getX());
+    xSpeed = Math.copySign(Math.min(Math.abs(xSpeed),1), xSpeed);
     System.out.println("x spee"+ xSpeed);
     swerveSubsystem.setSpeed(xSpeed, 0, 0, true);
   }
