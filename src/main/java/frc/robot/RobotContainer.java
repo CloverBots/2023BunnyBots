@@ -41,6 +41,7 @@ public class RobotContainer {
       driverController::getRightX,
       driverController::getYButton,
       driverController::getBButton,
+      driverController::getLeftTriggerAxis,
       () -> true);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
