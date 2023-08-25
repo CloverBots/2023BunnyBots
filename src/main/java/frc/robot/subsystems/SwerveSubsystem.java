@@ -100,6 +100,7 @@ public class SwerveSubsystem extends SubsystemBase {
         // Construct a ChassisSpeeds object, which will contain the movement and rotation speeds that we want our robot to do.
         SmartDashboard.putNumber("vx", vx);
         SmartDashboard.putNumber("vy", vy);
+        SmartDashboard.putNumber("vTheta", omegaRadsPerSecond);
         ChassisSpeeds chassisSpeeds;
         if (fieldOriented) {
             // Driving will be relative to field.
@@ -118,7 +119,11 @@ public class SwerveSubsystem extends SubsystemBase {
         // Set the swerve modules to their required states.
         setModuleStates(moduleStates);
     }
-
+    public void setBrakeMode(boolean brake) {
+        for (SwerveModule module : modules) {
+            module.setBrakeMode(brake);
+        }
+    }
     @Override
     public void periodic() {
         // Updates the odometer with the current rotation and distance travelled on each module.
@@ -164,9 +169,7 @@ public class SwerveSubsystem extends SubsystemBase {
         }
     }
     public void stopModules() {
-        for (SwerveModule module : modules) {
-            module.stop();
-        }
+        setSpeed(0, 0, 0, true);
     }
 
     public SwerveModulePosition[] getModulePositions() {

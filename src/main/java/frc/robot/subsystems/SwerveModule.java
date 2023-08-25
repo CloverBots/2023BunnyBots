@@ -60,6 +60,9 @@ public class SwerveModule {
         turningPidController.enableContinuousInput(-Math.PI, Math.PI);
         resetEncoders();
     }
+    protected void setBrakeMode(boolean brake) {
+        driveMotor.setNeutralMode(brake ? NeutralMode.Brake : NeutralMode.Coast);
+    }
     public double getTurningPosition() {
         double pos = turningMotor.getEncoder().getPosition();
         boolean sign = pos < 0;

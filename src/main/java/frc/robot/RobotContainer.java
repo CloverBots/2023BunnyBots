@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.commands.AutoTest;
 import frc.robot.commands.Autos;
 import frc.robot.commands.DriveFromControllerCommand;
 import frc.robot.commands.DriveToDistanceCommand;
@@ -51,14 +52,17 @@ public class RobotContainer {
 
   public void onEnable() {
     swerveSubsystem.onEnable();
+    swerveSubsystem.setBrakeMode(true);
   }
 
   public void resetGyro() {
     swerveSubsystem.zeroHeading();
   }
   private void configureAutoChooser() {
-    chooser.setDefaultOption("Dive Distance", new DriveToDistanceCommand(swerveSubsystem, 
-    (-1)));
+    chooser.setDefaultOption("Drive Distance", new AutoTest(swerveSubsystem));
+  }
+  public void onDisable() {
+    swerveSubsystem.setBrakeMode(false);
   }
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
