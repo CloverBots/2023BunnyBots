@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -52,6 +53,7 @@ public class DriveFromControllerCommand extends CommandBase {
         // Get real-time controller inputs
         double xSpeed = xSpdFunction.get();
         double ySpeed = ySpdFunction.get();
+
         double turningSpeed = turningSpdFunction.get();
 
         // Apply the deadzone. This will prevent the robot from moving at very small values
@@ -60,28 +62,31 @@ public class DriveFromControllerCommand extends CommandBase {
         turningSpeed = Math.abs(turningSpeed) > CONTROLLER_DEADZONE ? turningSpeed : 0.0;
 
         double speedMultiplier = crawlTrigger.get() >= 0.5 ? 0.05 : 1;
-        xSpeed = Math.pow(xSpeed, 3);
-        ySpeed = Math.pow(ySpeed, 3);
-        turningSpeed = Math.pow(turningSpeed, 5);
-        xSpeed *= speedMultiplier;
-        ySpeed *= speedMultiplier;
-        turningSpeed *= speedMultiplier;
+        
+        double magnitude = Math.hypot(ySpeed, xSpeed);
 
+        magnitude = Math.pow(magnitude, 3);
+
+        turningSpeed = Math.pow(turningSpeed, 5);
+
+        magnitude = Math.min(magnitude, 1);
         // Limit the acceleration for moving and rotation using the rate limiters
         // Using the rate limited value from 0 to 1, this will make a value of 1 move the robot at the configured maximum speed
-        xSpeed = xLimiter.calculate(xSpeed) * SwerveDriveConstants.TELEOP_MAX_SPEED_METERS_PER_SECOND;
-        ySpeed = yLimiter.calculate(ySpeed) * SwerveDriveConstants.TELEOP_MAX_SPEED_METERS_PER_SECOND;
+        magnitude = xLimiter.calculate(magnitude) * SwerveDriveConstants.TELEOP_MAX_SPEED_METERS_PER_SECOND;
+        
         turningSpeed = turningLimiter.calculate(turningSpeed)
                 * SwerveDriveConstants.teleOpMaxAngularSpeed;
         
-        
+        magnitude *= speedMultiplier;
+        xSpeed *= magnitude;
+        ySpeed *= magnitude;
+
+        turningSpeed *= speedMultiplier;
         if (yButtSupplier.get() && bButtSupplier.get() && lastPressedBoth == false) {
             fieldOriented = !fieldOriented;
         }
         lastPressedBoth = yButtSupplier.get() && bButtSupplier.get();
         SmartDashboard.putBoolean("Field Oriented", fieldOriented);
-        
-
         swerveSubsystem.setSpeed(ySpeed, xSpeed, turningSpeed, fieldOriented);
         
     }
