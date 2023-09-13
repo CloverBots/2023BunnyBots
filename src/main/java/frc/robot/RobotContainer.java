@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.commands.Auto2;
 import frc.robot.commands.AutoTest;
 import frc.robot.commands.Autos;
 import frc.robot.commands.DriveFromControllerCommand;
@@ -47,6 +48,7 @@ public class RobotContainer {
   public RobotContainer() {
     swerveSubsystem.setDefaultCommand(driveFromControllerCommand);
     configureAutoChooser();
+    SmartDashboard.putData(chooser);
     // Configure the trigger bindings
     configureBindings();
   }
@@ -61,6 +63,7 @@ public class RobotContainer {
   }
   private void configureAutoChooser() {
     chooser.setDefaultOption("Drive Distance", new AutoTest(swerveSubsystem));
+    chooser.addOption("auto 2", new Auto2(swerveSubsystem));
   }
   public void onDisable() {
     swerveSubsystem.setBrakeMode(false);
