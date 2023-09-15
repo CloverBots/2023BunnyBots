@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.IDs;
@@ -33,6 +34,8 @@ public class SwerveSubsystem extends SubsystemBase {
     //         DriveConstants.kFrontLeftTurningEncoderReversed,);
 
     private final AHRS gyro = new AHRS(IDs.AHRS_PORT_ID);
+
+    private final Timer resyncTimer = new Timer();
 
     /** This will track the robot's X and Y position, as well as its rotation. */
     private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(SwerveDriveConstants.swerveKinematics, getRotation2d(), 
@@ -69,6 +72,7 @@ public class SwerveSubsystem extends SubsystemBase {
         }
     }
     public void onEnable() {
+        resyncTimer.start();
         SmartDashboard.putBoolean("reset gyro", false);
         SmartDashboard.putBoolean("resync turn encoders", false);
         resetTurnEncoders();
@@ -130,6 +134,11 @@ public class SwerveSubsystem extends SubsystemBase {
         odometer.update(getRotation2d(), getModulePositions());
         for (int i = 0; i<4; i++) {
             modules[i].setDesiredState(states[i]);
+        }
+        if (this.resyncTimer.hasElapsed(1)) {
+            this.resetTurnEncoders();
+            this.resyncTimer.reset();
+            this.resyncTimer.start();
         }
         SmartDashboard.putNumber("Gyro Heading", getHeading());
         //SmartDashboard.putNumber("Gyro Roll", gyro.getRoll());

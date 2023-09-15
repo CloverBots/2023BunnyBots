@@ -47,7 +47,7 @@ public class SwerveDriveConstants {
     public static final double TURNING_ENCODER_TO_DEG = (360) / TURNING_GEAR_RATIO;
     public static final double TURNING_ENCODER_TO_RADS_PER_SECOND = TURNING_ENCODER_TO_RAD / 60;
 
-    public static final double kPTurning = 0.2;
+    public static final double kPTurning = 0.3;
     public static final double kITurning = 0;
     public static final double kDTurning = 0;
 
