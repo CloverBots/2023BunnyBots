@@ -13,6 +13,7 @@ import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -32,6 +33,7 @@ public class SwerveModule {
     protected SwerveModuleConfigurations config;
 
     private PIDController turningPidController;
+    public PIDController velocityPidController;
 
     /**
      * Constructs a new SwerveModule. 
@@ -107,11 +109,15 @@ public class SwerveModule {
             stop();
             return;
         }
+        
         state = SwerveModuleState.optimize(state, getState().angle);
-        driveMotor.set(TalonFXControlMode.PercentOutput, state.speedMetersPerSecond / SwerveDriveConstants.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
+        double output = (state.speedMetersPerSecond / SwerveDriveConstants.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
+        driveMotor.set(TalonFXControlMode.PercentOutput, output);
+
+
         turningMotor.set(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));
-        //SmartDashboard.putString("Swerve[" + config.name() + "] desired state", state.toString());
     }
+
 
     public void stop() {
         driveMotor.set(TalonFXControlMode.PercentOutput, 0);
