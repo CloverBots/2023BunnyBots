@@ -19,18 +19,20 @@ public class SwerveDriveConstants {
     public static final double TURNING_GEAR_RATIO = 150.0/7.0;
 
     // Length of the robot chassis, front to back
-    public static final double wheelBase = Units.inchesToMeters(18.5);//24
+    public static final double wheelBase = Units.inchesToMeters(18.5); //24
     // Width of the robot chassis, left to right
     public static final double trackWidth = Units.inchesToMeters(18.5);
 
     /** The maximum speed of the robot, in meters per second during TeleOp. Use this to limit the speed when using a controller.*/
-    public static final double TELEOP_MAX_SPEED_METERS_PER_SECOND = 20;
+    public static final double TELEOP_MAX_SPEED_METERS_PER_SECOND = 3;
+    public static final double TELEOP_SLOW_SPEED_METERS_PER_SECOND = 1;
 
     /** The PHYSICAL maximum speed of the robot, if all motors were running at max power. */
     public static final double PHYSICAL_MAX_SPEED_METERS_PER_SECOND = (1/DRIVE_GEAR_RATIO) * (6380.0/60) * WHEEL_CIRCUMFERENCE;
 
     /** Maximum speed for the robot's turning. */
-    public static final double teleOpMaxAngularSpeed = 20 * (2 * Math.PI);
+    public static final double teleOpMaxAngularSpeed = 3 * (2 * Math.PI);
+    public static final double teleOpSlowAngularSpeed = 1 * (2 * Math.PI);
     /** The maximum angular acceleration for the robot's turning. */
     public static final double teleOpMaxAngularAccelerationUnitsPerSecond = 5;
     /** The maximum acceleration for the robot's X and Y movement. */

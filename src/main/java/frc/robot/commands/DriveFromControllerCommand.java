@@ -14,13 +14,13 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class DriveFromControllerCommand extends CommandBase {
 
     private final SwerveSubsystem swerveSubsystem;
-    private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction, crawlTrigger;
-    private final Supplier<Boolean> yButtSupplier, bButtSupplier;
+    private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction, crawlTrigger, slowRotate;
+    private final Supplier<Boolean> yButtSupplier, bButtSupplier, aButtSupplier;
     private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
     private boolean fieldOriented = true;
+    private boolean pointedTurning = false;
     private final double CONTROLLER_DEADZONE = 0.05;
-    private boolean lastPressedBoth = false;
-    private double maxSpeed = SwerveDriveConstants.TELEOP_MAX_SPEED_METERS_PER_SECOND;
+    private boolean lastPressedBoth, lastApress = false;
 
     public DriveFromControllerCommand(
             SwerveSubsystem swerveSubsystem,
@@ -29,7 +29,9 @@ public class DriveFromControllerCommand extends CommandBase {
             Supplier<Double> turningSpdFunction,
             Supplier<Boolean> yButtSupplier,
             Supplier<Boolean> bButtSupplier,
+            Supplier<Boolean> aButtSupplier,
             Supplier<Double> crawlTrigger,
+            Supplier<Double> slowRotate,
             Supplier<Boolean> fieldOrientedFunction) {
         this.swerveSubsystem = swerveSubsystem;
         this.xSpdFunction = xSpdFunction;
@@ -37,7 +39,9 @@ public class DriveFromControllerCommand extends CommandBase {
         this.turningSpdFunction = turningSpdFunction;
         this.yButtSupplier = yButtSupplier;
         this.bButtSupplier = bButtSupplier;
+        this.aButtSupplier = aButtSupplier;
         this.crawlTrigger = crawlTrigger;
+        this.slowRotate = slowRotate;
         this.xLimiter = new SlewRateLimiter(SwerveDriveConstants.teleOpMaxAccelerationMetersPerSecond);
         this.yLimiter = new SlewRateLimiter(SwerveDriveConstants.teleOpMaxAccelerationMetersPerSecond);
         this.turningLimiter = new SlewRateLimiter(SwerveDriveConstants.teleOpMaxAngularAccelerationUnitsPerSecond);
@@ -54,6 +58,9 @@ public class DriveFromControllerCommand extends CommandBase {
         double xSpeed = xSpdFunction.get();
         double ySpeed = ySpdFunction.get();
 
+
+
+
         double turningSpeed = turningSpdFunction.get();
 
         // Apply the deadzone. This will prevent the robot from moving at very small values
@@ -61,7 +68,20 @@ public class DriveFromControllerCommand extends CommandBase {
         ySpeed = Math.abs(ySpeed) > CONTROLLER_DEADZONE ? ySpeed : 0.0;
         turningSpeed = Math.abs(turningSpeed) > CONTROLLER_DEADZONE ? turningSpeed : 0.0;
 
-        double speedMultiplier = crawlTrigger.get() >= 0.5 ? 0.05 : 1;
+        double speed;
+        double turningSpeedMultiplier;
+        if (crawlTrigger.get() >= 0.5) {
+            speed = SwerveDriveConstants.TELEOP_SLOW_SPEED_METERS_PER_SECOND;
+            turningSpeedMultiplier = SwerveDriveConstants.teleOpSlowAngularSpeed;
+        } else {
+            speed = SwerveDriveConstants.TELEOP_MAX_SPEED_METERS_PER_SECOND;
+            turningSpeedMultiplier = SwerveDriveConstants.teleOpMaxAngularSpeed;
+        }
+        if (slowRotate.get() >= 0.5 || crawlTrigger.get() >= 0.5) {
+            turningSpeedMultiplier = SwerveDriveConstants.teleOpSlowAngularSpeed;
+        } else {
+            turningSpeedMultiplier = SwerveDriveConstants.teleOpMaxAngularSpeed;
+        }
         
         double magnitude = Math.hypot(ySpeed, xSpeed);
 
@@ -72,19 +92,18 @@ public class DriveFromControllerCommand extends CommandBase {
         magnitude = Math.min(magnitude, 1);
         // Limit the acceleration for moving and rotation using the rate limiters
         // Using the rate limited value from 0 to 1, this will make a value of 1 move the robot at the configured maximum speed
-        magnitude = xLimiter.calculate(magnitude) * SwerveDriveConstants.TELEOP_MAX_SPEED_METERS_PER_SECOND;
+        magnitude = xLimiter.calculate(magnitude);
         
-        turningSpeed = turningLimiter.calculate(turningSpeed)
-                * SwerveDriveConstants.teleOpMaxAngularSpeed;
+        turningSpeed = turningLimiter.calculate(turningSpeed);
         
-        magnitude *= speedMultiplier;
+        magnitude *= speed;
         xSpeed *= magnitude;
         ySpeed *= magnitude;
-
-        turningSpeed *= speedMultiplier;
+        turningSpeed *= turningSpeedMultiplier;
         if (yButtSupplier.get() && bButtSupplier.get() && lastPressedBoth == false) {
             fieldOriented = !fieldOriented;
         }
+
         lastPressedBoth = yButtSupplier.get() && bButtSupplier.get();
         SmartDashboard.putBoolean("Field Oriented", fieldOriented);
         swerveSubsystem.setSpeed(ySpeed, xSpeed, turningSpeed, fieldOriented);

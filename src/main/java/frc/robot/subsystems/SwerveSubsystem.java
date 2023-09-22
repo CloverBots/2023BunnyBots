@@ -30,7 +30,7 @@ public class SwerveSubsystem extends SubsystemBase {
     // private final SwerveModule frontLeft = new SwerveModule(
     //         DriveConstants.kFrontLeftDriveMotorPort,
     //         DriveConstants.kFrontLeftTurningMotorPort,
-    //         //DriveConstants.kFrontLeftDriveEncoderReversed, //need?
+    //         DriveConstants.kFrontLeftDriveEncoderReversed, //need?
     //         DriveConstants.kFrontLeftTurningEncoderReversed,);
 
     private final AHRS gyro = new AHRS(IDs.AHRS_PORT_ID);
