@@ -21,18 +21,25 @@ public class DriveToDistanceCommand extends CommandBase {
 
   private Timer timer;
   private double timeout;
-  /** Creates a new DriveToDistanceCommand. */
-  public DriveToDistanceCommand(SwerveSubsystem swerveSubsystem, double dx, double dy, double dTheta, double timeout) {
+  /**
+   * Drives the robot to a given X / Y position, and angle. This is relative to the robot's initial position.
+   * @param swerveSubsystem
+   * @param xPos The X position you want the robot to go to. This is forwards/backwards.
+   * @param yPos The Y position you want the robot to go to. This is left/right.
+   * @param angle The angle, in Radians, that the robot should be at.
+   * @param timeout The maximum amount of time, in seconds, that this command should run for. The command will end if the timeout is reached if it hasn't ended already.
+   */
+  public DriveToDistanceCommand(SwerveSubsystem swerveSubsystem, double xPos, double yPos, double angle, double timeout) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerveSubsystem);
     this.timer = new Timer();
     this.timeout = timeout;
     this.swerveSubsystem = swerveSubsystem;
-    driveDistanceControllerX.setSetpoint(dx);
+    driveDistanceControllerX.setSetpoint(xPos);
     driveDistanceControllerX.setTolerance(0.005);
-    driveDistanceControllerY.setSetpoint(dy);
+    driveDistanceControllerY.setSetpoint(yPos);
     driveDistanceControllerY.setTolerance(0.005);
-    rotationController.setSetpoint(dTheta);
+    rotationController.setSetpoint(angle);
     rotationController.setTolerance(0.005);
     rotationController.enableContinuousInput(0, 2*Math.PI);
   }
