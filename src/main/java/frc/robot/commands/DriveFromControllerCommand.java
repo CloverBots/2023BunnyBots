@@ -25,7 +25,7 @@ public class DriveFromControllerCommand extends CommandBase {
     private final double POINTED_JOYSTICK_DEADZONE = 0.5;
 
     private boolean fieldOrientedCache, pointedModeCache = false;
-    private PIDController rotationController = new PIDController(Math.PI, 0, 0);
+    private PIDController rotationController;
 
     public DriveFromControllerCommand(
             SwerveSubsystem swerveSubsystem,
@@ -41,19 +41,27 @@ public class DriveFromControllerCommand extends CommandBase {
             Supplier<Double> slowRotate,
             Supplier<Integer> dPad) {
         this.swerveSubsystem = swerveSubsystem;
+
         this.leftStickX = leftStickX;
         this.leftStickY = leftStickY;
         this.rightStickX = rightStickX;
         this.rightStickY = rightStickY;
+
         this.yButton = yButton;
         this.bButton = bButton;
         this.aButton = aButton;
         this.xButton = xButton;
+
         this.crawlTrigger = crawlTrigger;
         this.slowRotate = slowRotate;
         this.dPad = dPad;
+
         this.translationLimiter = new SlewRateLimiter(SwerveDriveConstants.teleOpMaxAccelerationMetersPerSecond);
         this.turningLimiter = new SlewRateLimiter(SwerveDriveConstants.teleOpMaxAngularAccelerationUnitsPerSecond);
+
+        this.rotationController = new PIDController(Math.PI, 0, 0);
+        this.rotationController.enableContinuousInput(0, Math.PI*2);
+        
         addRequirements(swerveSubsystem);
     }
 
