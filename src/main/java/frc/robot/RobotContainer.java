@@ -40,12 +40,14 @@ public class RobotContainer {
       driverController::getLeftX,
       driverController::getLeftY,
       driverController::getRightX,
+      driverController::getRightY,
       driverController::getYButton,
       driverController::getBButton,
       driverController::getAButton,
+      driverController::getXButton,
       driverController::getLeftTriggerAxis,
       driverController::getRightTriggerAxis,
-      () -> true);
+      driverController::getPOV);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     swerveSubsystem.setDefaultCommand(driveFromControllerCommand);

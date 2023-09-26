@@ -100,21 +100,28 @@ public class SwerveSubsystem extends SubsystemBase {
     public void resetOdometry() {
         odometer.resetPosition(getRotation2d(), getModulePositions(), new Pose2d());
     }
+    public void setBrakeMode(boolean brake) {
+        for (SwerveModule module : modules) {
+            module.setBrakeMode(brake);
+        }
+    }
     public void setSpeed(double vx, double vy, double omegaRadsPerSecond, boolean fieldOriented) {
+        setSpeed(new ChassisSpeeds(vx, vy, omegaRadsPerSecond), fieldOriented);
+    }
+    public void setSpeed(ChassisSpeeds chassisSpeeds, boolean fieldOriented) {
         // Construct a ChassisSpeeds object, which will contain the movement and rotation speeds that we want our robot to do.
-        SmartDashboard.putNumber("vx", vx);
-        SmartDashboard.putNumber("vy", vy);
-        SmartDashboard.putNumber("vTheta", omegaRadsPerSecond);
-        ChassisSpeeds chassisSpeeds;
+        SmartDashboard.putNumber("vx", chassisSpeeds.vxMetersPerSecond);
+        SmartDashboard.putNumber("vy", chassisSpeeds.vyMetersPerSecond);
+        SmartDashboard.putNumber("vTheta", chassisSpeeds.omegaRadiansPerSecond);
         if (fieldOriented) {
             // Driving will be relative to field.
             // If this is enabled, then pressing forward will always move the robot forward, no matter its rotation.
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                    vx, vy, omegaRadsPerSecond, getRotation2d());
+                    chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond, chassisSpeeds.omegaRadiansPerSecond, getRotation2d());
         } else {
             // Driving will be relative to the robot.
             // If this is enabled, then pressing forward will move the robot in the direction that it is currently facing.
-            chassisSpeeds = new ChassisSpeeds(vx, vy, omegaRadsPerSecond);
+            chassisSpeeds = new ChassisSpeeds(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond, chassisSpeeds.omegaRadiansPerSecond);
         }
 
         // This will take the speeds that we want our robot to move and turn at, and calculate the required direction and speed for each swerve module on the robot.
@@ -122,11 +129,6 @@ public class SwerveSubsystem extends SubsystemBase {
         
         // Set the swerve modules to their required states.
         setModuleStates(moduleStates);
-    }
-    public void setBrakeMode(boolean brake) {
-        for (SwerveModule module : modules) {
-            module.setBrakeMode(brake);
-        }
     }
     @Override
     public void periodic() {
