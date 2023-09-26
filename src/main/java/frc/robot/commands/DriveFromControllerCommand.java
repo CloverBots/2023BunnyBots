@@ -5,7 +5,6 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.SwerveDriveConstants;
@@ -59,9 +58,9 @@ public class DriveFromControllerCommand extends CommandBase {
         this.translationLimiter = new SlewRateLimiter(SwerveDriveConstants.teleOpMaxAccelerationMetersPerSecond);
         this.turningLimiter = new SlewRateLimiter(SwerveDriveConstants.teleOpMaxAngularAccelerationUnitsPerSecond);
 
-        this.rotationController = new PIDController(Math.PI, 0, 0);
-        this.rotationController.enableContinuousInput(0, Math.PI*2);
-        
+        this.rotationController = new PIDController(0.017, 0, 0);
+        this.rotationController.enableContinuousInput(0, 360);
+
         addRequirements(swerveSubsystem);
     }
 
@@ -156,7 +155,7 @@ public class DriveFromControllerCommand extends CommandBase {
         angle = ((angle+2*Math.PI) % (Math.PI*2));
         angle *= (180/Math.PI);
         rotationController.setSetpoint(angle);
-        return rotationController.calculate(Units.degreesToRadians(swerveSubsystem.getHeading()));
+        return rotationController.calculate(swerveSubsystem.getHeading());
     }
     /**
      * Automatically points the robot in the four cardinal directions (0, 90, 180, and 270 degrees) relative to the A B Y X buttons.
@@ -179,7 +178,7 @@ public class DriveFromControllerCommand extends CommandBase {
         } 
         else return 0; // Returns a speed of 0 if none of the buttons are pressed.
         rotationController.setSetpoint(angle);
-        return rotationController.calculate(Units.degreesToRadians(swerveSubsystem.getHeading()));
+        return rotationController.calculate(swerveSubsystem.getHeading());
     }
     /**
      * Calculates the Translation (X and Y) speeds of the robot from the controller joystick.

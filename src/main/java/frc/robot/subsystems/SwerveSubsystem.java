@@ -80,6 +80,10 @@ public class SwerveSubsystem extends SubsystemBase {
     public void zeroHeading() {
         gyro.reset();
     }
+    /**
+     * Gives the robot's gyro heading
+     * @return The angle of the robot, from 0 to 360 degrees.
+     */
     public double getHeading() {
         // Because the NavX gives headings from -180 to 180 degrees, we need to convert it to a range of 0 to 360 degrees.
         // negative because we need CCW = positive
