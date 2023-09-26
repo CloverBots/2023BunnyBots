@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import static frc.robot.constants.SwerveDriveConstants.SwerveModuleConfigurations;
-
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -13,14 +11,13 @@ import com.ctre.phoenix.sensors.SensorTimeBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.SwerveDriveConstants;
+import frc.robot.constants.SwerveDriveConstants.SwerveModuleConfigurations;
 
 /**
  * Represents a Swerve Module on the robot. Contains movement and turning functionality for the wheel.
