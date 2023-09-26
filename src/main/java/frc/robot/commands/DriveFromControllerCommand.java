@@ -80,7 +80,6 @@ public class DriveFromControllerCommand extends CommandBase {
 
         // Feed the calculated speeds to the swerve subsystem
         swerveSubsystem.setSpeed(speeds, fieldOriented);
-    
     }
     /**
      * Correctly handles all the toggle buttons on the controller (field oriented, point mode, etc.)
@@ -155,8 +154,7 @@ public class DriveFromControllerCommand extends CommandBase {
         double angle = Math.atan2(rx, ry);
         angle = ((angle+2*Math.PI) % (Math.PI*2));
         angle *= (180/Math.PI);
-        rotationController.setSetpoint(angle);
-        return rotationController.calculate(swerveSubsystem.getHeading());
+        return rotationController.calculate(swerveSubsystem.getHeading(), angle);
     }
     /**
      * Automatically points the robot in the four cardinal directions (0, 90, 180, and 270 degrees) relative to the A B Y X buttons.
@@ -178,8 +176,7 @@ public class DriveFromControllerCommand extends CommandBase {
             angle = 270;
         } 
         else return 0; // Returns a speed of 0 if none of the buttons are pressed.
-        rotationController.setSetpoint(angle);
-        return rotationController.calculate(swerveSubsystem.getHeading());
+        return rotationController.calculate(swerveSubsystem.getHeading(), angle);
     }
     /**
      * Calculates the Translation (X and Y) speeds of the robot from the controller joystick.
