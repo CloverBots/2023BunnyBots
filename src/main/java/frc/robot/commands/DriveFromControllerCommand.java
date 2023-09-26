@@ -108,8 +108,7 @@ public class DriveFromControllerCommand extends CommandBase {
         
         // If none of those buttons are pressed, check to see if pointed turning is enabled.
         else if (pointedTurning) {
-            if (Math.hypot(rightStickX.get(), rightStickY.get()) < POINTED_JOYSTICK_DEADZONE) rotationSpeed = 0;
-            else rotationSpeed = calculateTurningSpeedPointed(rightStickX.get(), rightStickY.get());
+            rotationSpeed = calculateTurningSpeedPointed(rightStickX.get(), rightStickY.get());
         }
 
         // If none of those above are true, use the normal controls.
@@ -151,6 +150,8 @@ public class DriveFromControllerCommand extends CommandBase {
      * @return The turning speed calculated by the PID controller
      */
     private double calculateTurningSpeedPointed(double rx, double ry) {
+        // Apply a deadzone to the joystick
+        if (Math.hypot(rx, ry) < POINTED_JOYSTICK_DEADZONE) return 0;
         double angle = Math.atan2(rx, ry);
         angle = ((angle+2*Math.PI) % (Math.PI*2));
         angle *= (180/Math.PI);
