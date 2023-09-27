@@ -87,7 +87,13 @@ public class SwerveSubsystem extends SubsystemBase {
     public double getHeading() {
         // Because the NavX gives headings from -180 to 180 degrees, we need to convert it to a range of 0 to 360 degrees.
         // negative because we need CCW = positive
-        return Math.IEEEremainder(-gyro.getAngle(), 360);
+        double angle = -gyro.getAngle();
+        boolean sign = angle < 0;
+        angle = Math.abs(angle);
+        angle = angle % 360;
+        if (sign) angle = 360-angle;
+        return angle;
+        // return Math.IEEEremainder(-gyro.getAngle(), 360);
     }
 
     public Rotation2d getRotation2d() {
