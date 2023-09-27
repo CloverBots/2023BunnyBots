@@ -198,6 +198,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public void setModuleStates(SwerveModuleState[] desiredStates) {
+         // Check for any desired states over 100%, if so, tone down.
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveDriveConstants.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
         this.states = desiredStates;
     }
