@@ -7,9 +7,14 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SwerveSubsystem;
 
+/**
+ * Resets the odometer on the {@link SwerveSubsystem}.
+*/
 public class ResetOdometryCommand extends CommandBase {
-  /** Creates a new ResetOdometryCommand. */
+
   SwerveSubsystem swerveSubsystem;
+  
+  /** Creates a new ResetOdometryCommand. */
   public ResetOdometryCommand(SwerveSubsystem swerveSubsystem) {
     addRequirements(swerveSubsystem);
     this.swerveSubsystem = swerveSubsystem;

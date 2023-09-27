@@ -9,7 +9,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,14 +23,8 @@ public class SwerveSubsystem extends SubsystemBase {
      */ 
     private SwerveModuleState[] states;
 
-    /** Contains all 4 Swerve Modules */
+    /** Contains all 4 Swerve Modules. Includes their motors and encoders. */
     private SwerveModule[] modules;
-
-    // private final SwerveModule frontLeft = new SwerveModule(
-    //         DriveConstants.kFrontLeftDriveMotorPort,
-    //         DriveConstants.kFrontLeftTurningMotorPort,
-    //         DriveConstants.kFrontLeftDriveEncoderReversed, //need?
-    //         DriveConstants.kFrontLeftTurningEncoderReversed,);
 
     private final AHRS gyro = new AHRS(IDs.AHRS_PORT_ID);
 
@@ -71,12 +64,18 @@ public class SwerveSubsystem extends SubsystemBase {
             modules[i] = new SwerveModule(SwerveModuleConfigurations.values()[i]);
         }
     }
+    /**
+     * Called once every time the robot is enabled.
+     */
     public void onEnable() {
         resyncTimer.start();
         SmartDashboard.putBoolean("reset gyro", false);
         SmartDashboard.putBoolean("resync turn encoders", false);
         resetTurnEncoders();
     }
+    /**
+     * Resets the gyroscope to 0.
+     */
     public void zeroHeading() {
         gyro.reset();
     }
@@ -95,7 +94,10 @@ public class SwerveSubsystem extends SubsystemBase {
         return angle;
         // return Math.IEEEremainder(-gyro.getAngle(), 360);
     }
-
+    /**
+     * Gives the robot's heading as a {@code Rotation2d} instance.
+     * @return A {@code Rotation2d} containing the robot's heading.
+     */
     public Rotation2d getRotation2d() {
         return Rotation2d.fromDegrees(getHeading());
     }
@@ -103,10 +105,16 @@ public class SwerveSubsystem extends SubsystemBase {
     public Pose2d getPose() {
         return odometer.getPoseMeters();
     }
-
+    /**
+     * Reset the odometry, and set it to a new 2D Position.
+     * @param pose The new position in 2D that the robot will be set at.
+     */
     public void resetOdometry(Pose2d pose) {
         odometer.resetPosition(getRotation2d(), getModulePositions(), pose);
     }
+    /**
+     * Resets the odometer to 0 on X and Y.
+     */
     public void resetOdometry() {
         odometer.resetPosition(getRotation2d(), getModulePositions(), new Pose2d());
     }
@@ -144,14 +152,19 @@ public class SwerveSubsystem extends SubsystemBase {
     public void periodic() {
         // Updates the odometer with the current rotation and distance travelled on each module.
         odometer.update(getRotation2d(), getModulePositions());
+        
+        // Sets the desired states to all 4 swerve modules.
         for (int i = 0; i<4; i++) {
             modules[i].setDesiredState(states[i]);
         }
+
+        // Synchnonize the turning motor's encoder with the absolute encoder every few seconds.
         if (this.resyncTimer.hasElapsed(1)) {
             this.resetTurnEncoders();
             this.resyncTimer.reset();
             this.resyncTimer.start();
         }
+
         SmartDashboard.putNumber("Gyro Heading", getHeading());
         //SmartDashboard.putNumber("Gyro Roll", gyro.getRoll());
         //SmartDashboard.putNumber("Gyro Pitch", gyro.getPitch());
@@ -177,23 +190,37 @@ public class SwerveSubsystem extends SubsystemBase {
         // for (int i=0; i<modules.length; i++) {
         //     SmartDashboard.putNumber("talon "+SwerveDriveConstants.SwerveModuleConfigurations.values()[i].name(), modules[i].getDriveVelocity());
         // }
-
-        
     }
+
+    /**
+     * Synchronizes the encoder on the turning motor with the absolute encoder on every swerve module.
+     */
     public void resetTurnEncoders() {
         for (SwerveModule module : modules) {
             module.resetTurnEncoder();
         }
     }
+
+    /**
+     * Resets the encoder on every drive motor to 0.
+     */
     public void resetDriveEncoders() {
         for (SwerveModule module : modules) {
             module.resetDriveEncoder();
         }
     }
+
+    /**
+     * Sets the speed of the robot to 0 in all directions.
+     */
     public void stopModules() {
         setSpeed(0, 0, 0, true);
     }
 
+    /**
+     * Gives the direction and total distance travelled by each module
+     * @return The current {@code SwerveModulePosition} for each module.
+     */
     public SwerveModulePosition[] getModulePositions() {
         return new SwerveModulePosition[] {
             modules[0].getPosition(),
@@ -203,8 +230,12 @@ public class SwerveSubsystem extends SubsystemBase {
         };
     }
 
+    /**
+     * Sets the desired {@code SwerveModuleState} for every swerve module
+     * @param desiredStates The desired states for every module.
+     */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
-         // Check for any desired states over 100%, if so, tone down.
+         // Check for any desired states over the physical maximum speed. If so, scale all the other speeds down.
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveDriveConstants.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
         this.states = desiredStates;
     }

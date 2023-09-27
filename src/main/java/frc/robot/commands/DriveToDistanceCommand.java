@@ -11,7 +11,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SwerveSubsystem;
 
-
+/**
+ * Drives the robot to a given X / Y position, and angle. This is relative to the robot's initial position.
+ */
 public class DriveToDistanceCommand extends CommandBase {
   private SwerveSubsystem swerveSubsystem;
 
@@ -27,10 +29,9 @@ public class DriveToDistanceCommand extends CommandBase {
    * @param xPos The X position you want the robot to go to. This is forwards/backwards.
    * @param yPos The Y position you want the robot to go to. This is left/right.
    * @param angle The angle, in Radians, that the robot should be at.
-   * @param timeout The maximum amount of time, in seconds, that this command should run for. The command will end if the timeout is reached if it hasn't ended already.
+   * @param timeout The maximum amount of time, in seconds, that this command should run for. The command will end if the timeout is reached and if it hasn't ended already.
    */
   public DriveToDistanceCommand(SwerveSubsystem swerveSubsystem, double xPos, double yPos, double angle, double timeout) {
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerveSubsystem);
     this.timer = new Timer();
     this.timeout = timeout;

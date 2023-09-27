@@ -27,6 +27,7 @@ public class SwerveModule {
     private final CANSparkMax turningMotor;
     private final CANCoder turningEncoder;
 
+    /** Contains the motor/encoder IDs, offsets, and other settings for the module. */
     protected SwerveModuleConfigurations config;
 
     private PIDController turningPidController;
@@ -62,6 +63,10 @@ public class SwerveModule {
     protected void setBrakeMode(boolean brake) {
         driveMotor.setNeutralMode(brake ? NeutralMode.Brake : NeutralMode.Coast);
     }
+    /**
+     * Gives the current angle of the wheel on the swerve module.
+     * @return The angle, in radians from 0 to 2Pi, of the wheel.
+     */
     public double getTurningPosition() {
         double pos = turningMotor.getEncoder().getPosition();
         boolean sign = pos < 0;
@@ -71,56 +76,79 @@ public class SwerveModule {
         if (sign) pos = (2*Math.PI) - pos;
         return pos;
     }
+    /**
+     * Gives the value from the absolute encoder (CANCoder). Will always keep its angle even if the robot is turned off.
+     * @return The angle from the CANCoder.
+     */
     public double getAbsolutePosition() {
         return turningEncoder.getAbsolutePosition();
     }
+    /**
+     * Gives velocity that the wheel is turning at currently.
+     * @return The turning velocity, in radians/second.
+     */
     public double getTurningVelocity() {
         return turningMotor.getEncoder().getVelocity();
     }
+    /** Resets the drive encoder to 0, and synchronizes the turning encoder. */
     public void resetEncoders() {
         driveMotor.setSelectedSensorPosition(0);
         turningMotor.getEncoder().setPosition(Units.degreesToRadians(getAbsolutePosition()));
     }
+    /** Synchronizes the turning encoder with the CANCoder. */
     public void resetTurnEncoder() {
         turningMotor.getEncoder().setPosition(Units.degreesToRadians(getAbsolutePosition()));
     }
+    /** Resets the drive encoder to 0. */
     public void resetDriveEncoder() {
         driveMotor.setSelectedSensorPosition(0);
     }
+    /** Gives the current velocity of the wheel, in Meters/Second. */
     public double getDriveVelocity() {
         return driveMotor.getSelectedSensorVelocity() * SwerveDriveConstants.DRIVE_ENCODER_VELOCITY_TO_METERS_PER_SECOND;
     }
+    /** Gives the current {@code SwerveModuleState} of the module. Contains the current angle and velocity of the wheel. */
     public SwerveModuleState getState() {
         return new SwerveModuleState(
             driveMotor.getSelectedSensorVelocity(), new Rotation2d(getTurningPosition()));
     }
+    /** Gives the current {@code SwerveModulePosition} of the module. Contains the total distance travelled and the current angle of the wheel.*/
     public SwerveModulePosition getPosition() {
         return new SwerveModulePosition(
             driveMotor.getSelectedSensorPosition() * SwerveDriveConstants.DRIVE_ENCODER_TO_METERS, new Rotation2d(getTurningPosition()));
     }
+    /** Gives the total distance travelled by the wheel, in meters. */
     public double getDriveMotorPosition() {
         return driveMotor.getSelectedSensorPosition() * SwerveDriveConstants.DRIVE_ENCODER_TO_METERS;
     }
+    /** Sets the desired state of the swerve module.
+     * @param state The desired {@code SwerveModuleState}. Contains the desired velocity and angle of the wheel.
+     */
     public void setDesiredState(SwerveModuleState state) {
+        
+        // Prevent the wheel from moving at very low speeds.
         if (Math.abs(state.speedMetersPerSecond) < 0.001) {
             stop();
             return;
         }
         
+        // This will minimize the change in angle by allowing the wheel to spin backwards if needed.
+        // For example, if you want to make the robot move in the opposite direction, this will make it so the wheel will simply spin backwards instead of turning the whole wheel around.
         state = SwerveModuleState.optimize(state, getState().angle);
+
+        // Calculates the (estimated) power needed for the wheel to reach the speed needed.
         double output = (state.speedMetersPerSecond / SwerveDriveConstants.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
         driveMotor.set(TalonFXControlMode.PercentOutput, output);
-
-
+        
         turningMotor.set(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));
     }
 
-
+    /** Sets the speed of both motors to 0. */
     public void stop() {
         driveMotor.set(TalonFXControlMode.PercentOutput, 0);
         turningMotor.set(0);
     }
-
+    /** Configures the CANCoder. */
     private void configureCANCoder(CANCoder cancoder) {
         CANCoderConfiguration encoderConfig = new CANCoderConfiguration();
         encoderConfig.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;

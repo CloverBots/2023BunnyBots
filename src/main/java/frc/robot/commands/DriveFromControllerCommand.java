@@ -10,6 +10,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.SwerveDriveConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 
+/**
+ * Drives the robot using input from the controller.
+ */
 public class DriveFromControllerCommand extends CommandBase {
 
     private final SwerveSubsystem swerveSubsystem;

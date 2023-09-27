@@ -29,7 +29,6 @@ public class RobotContainer {
   private final XboxController driverController = new XboxController(IDs.CONTROLLER_DRIVE_PORT);
   private final SendableChooser<Command> chooser = new SendableChooser<>();
 
-
   private final DriveFromControllerCommand driveFromControllerCommand = 
     new DriveFromControllerCommand(
       swerveSubsystem,
@@ -44,6 +43,7 @@ public class RobotContainer {
       driverController::getLeftTriggerAxis,
       driverController::getRightTriggerAxis,
       driverController::getPOV);
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     swerveSubsystem.setDefaultCommand(driveFromControllerCommand);
@@ -53,6 +53,7 @@ public class RobotContainer {
     configureBindings();
   }
 
+  /** Will run once any time the robot is enabled, in any mode (Doesn't matter if Teleop / Autonomous) */
   public void onEnable() {
     swerveSubsystem.onEnable();
     swerveSubsystem.setBrakeMode(true);
@@ -65,6 +66,7 @@ public class RobotContainer {
     chooser.setDefaultOption("Drive Distance", new AutoTest(swerveSubsystem));
     chooser.addOption("auto 2", new Auto2(swerveSubsystem));
   }
+  /** Will run once any time the robot is disabled. */
   public void onDisable() {
     swerveSubsystem.setBrakeMode(false);
   }
