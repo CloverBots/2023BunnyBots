@@ -58,8 +58,8 @@ public class DriveFromControllerCommand extends CommandBase {
         this.translationLimiter = new SlewRateLimiter(SwerveDriveConstants.teleOpMaxAccelerationMetersPerSecond);
         this.turningLimiter = new SlewRateLimiter(SwerveDriveConstants.teleOpMaxAngularAccelerationUnitsPerSecond);
 
-        this.rotationController = new PIDController(0.017, 0, 0);
-        this.rotationController.enableContinuousInput(0, 360);
+        this.rotationController = new PIDController(0.06, 0.02, 0.001); // 0.017, 0, 0
+        this.rotationController.enableContinuousInput(-180, 180);
 
         addRequirements(swerveSubsystem);
     }
@@ -167,16 +167,17 @@ public class DriveFromControllerCommand extends CommandBase {
             angle = 0;
         }
         else if (bButton.get()) {
-            angle = 90;
+            angle = -90;
         }
         else if (aButton.get()) {
             angle = 180;
         }
         else if (xButton.get()) {
-            angle = 270;
+            angle = 90;
         } 
         else return 0; // Returns a speed of 0 if none of the buttons are pressed.
-        return rotationController.calculate(swerveSubsystem.getHeading(), angle);
+        
+        return -rotationController.calculate(swerveSubsystem.getHeading(), angle);
     }
     /**
      * Calculates the Translation (X and Y) speeds of the robot from the controller joystick.
