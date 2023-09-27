@@ -24,7 +24,7 @@ public class DriveFromControllerCommand extends CommandBase {
     private final double POINTED_JOYSTICK_DEADZONE = 0.5;
 
     private boolean fieldOrientedCache, pointedModeCache = false;
-    private PIDController rotationController;
+    private PIDController rotationController, pointedRotationController;
 
     public DriveFromControllerCommand(
             SwerveSubsystem swerveSubsystem,
@@ -60,6 +60,9 @@ public class DriveFromControllerCommand extends CommandBase {
 
         this.rotationController = new PIDController(0.06, 0.02, 0.001); // 0.017, 0, 0
         this.rotationController.enableContinuousInput(0, 360);
+        
+        this.pointedRotationController = new PIDController(0.05, 0, 0);
+        this.pointedRotationController.enableContinuousInput(0, 360);
 
         addRequirements(swerveSubsystem);
     }
@@ -154,7 +157,7 @@ public class DriveFromControllerCommand extends CommandBase {
         double angle = Math.atan2(rx, ry);
         angle = ((angle+2*Math.PI) % (Math.PI*2));
         angle *= (180/Math.PI);
-        return rotationController.calculate(swerveSubsystem.getHeading(), angle);
+        return pointedRotationController.calculate(swerveSubsystem.getHeading(), angle);
     }
     /**
      * Automatically points the robot in the four cardinal directions (0, 90, 180, and 270 degrees) relative to the A B Y X buttons.
