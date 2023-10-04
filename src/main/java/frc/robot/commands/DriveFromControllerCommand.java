@@ -27,7 +27,7 @@ public class DriveFromControllerCommand extends CommandBase {
     private final double POINTED_JOYSTICK_DEADZONE = 0.5;
 
     private boolean fieldOrientedCache, pointedModeCache = false;
-    private PIDController rotationController, pointedRotationController;
+    private PIDController rotationController;
 
     public DriveFromControllerCommand(
             SwerveSubsystem swerveSubsystem,
@@ -61,11 +61,11 @@ public class DriveFromControllerCommand extends CommandBase {
         this.translationLimiter = new SlewRateLimiter(SwerveDriveConstants.teleOpMaxAccelerationMetersPerSecond);
         this.turningLimiter = new SlewRateLimiter(SwerveDriveConstants.teleOpMaxAngularAccelerationUnitsPerSecond);
 
-        this.rotationController = new PIDController(0.06, 0.02, 0.001); // 0.017, 0, 0
+        this.rotationController = new PIDController(0.065, 0.03, 0.005); // 0.017, 0, 0
         this.rotationController.enableContinuousInput(0, 360);
         
-        this.pointedRotationController = new PIDController(0.05, 0, 0);
-        this.pointedRotationController.enableContinuousInput(0, 360);
+        // this.pointedRotationController = new PIDController(0.07, 0.02, 0);
+        // this.pointedRotationController.enableContinuousInput(0, 360);
 
         addRequirements(swerveSubsystem);
     }
@@ -76,6 +76,7 @@ public class DriveFromControllerCommand extends CommandBase {
 
     @Override
     public void execute() {
+        
         // Start calculating our speeds
         ChassisSpeeds speeds = calculateSpeeds();
 
@@ -155,12 +156,18 @@ public class DriveFromControllerCommand extends CommandBase {
      * @return The turning speed calculated by the PID controller
      */
     private double calculateTurningSpeedPointed(double rx, double ry) {
+        ry = -ry;
+        rx = -rx;
         // Apply a deadzone to the joystick
         if (Math.hypot(rx, ry) < POINTED_JOYSTICK_DEADZONE) return 0;
         double angle = Math.atan2(rx, ry);
-        angle = ((angle+2*Math.PI) % (Math.PI*2));
         angle *= (180/Math.PI);
-        return pointedRotationController.calculate(swerveSubsystem.getHeading(), angle);
+        boolean sign = angle < 0;
+        angle = Math.abs(angle);
+        angle = angle % 360;
+        if (sign) angle = 360-angle;
+        SmartDashboard.putNumber("Joystick/Angle", angle);
+        return -rotationController.calculate(swerveSubsystem.getHeading(), angle);
     }
     /**
      * Automatically points the robot in the four cardinal directions (0, 90, 180, and 270 degrees) relative to the A B Y X buttons.
@@ -181,8 +188,9 @@ public class DriveFromControllerCommand extends CommandBase {
         else if (xButton.get()) {
             angle = 90;
         } 
-        else return 0; // Returns a speed of 0 if none of the buttons are pressed.
         
+        else return 0; // Returns a speed of 0 if none of the buttons are pressed.
+        SmartDashboard.putNumber("Joystick/Angle", angle);
         return -rotationController.calculate(swerveSubsystem.getHeading(), angle);
     }
     /**

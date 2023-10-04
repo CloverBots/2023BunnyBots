@@ -86,7 +86,7 @@ public class SwerveSubsystem extends SubsystemBase {
     public double getHeading() {
         // Because the NavX gives headings from -180 to 180 degrees, we need to convert it to a range of 0 to 360 degrees.
         // negative because we need CCW = positive
-        double angle = -gyro.getAngle();
+        double angle = -gyro.getYaw();
         boolean sign = angle < 0;
         angle = Math.abs(angle);
         angle = angle % 360;
@@ -164,8 +164,7 @@ public class SwerveSubsystem extends SubsystemBase {
             this.resyncTimer.reset();
             this.resyncTimer.start();
         }
-
-        SmartDashboard.putNumber("Gyro Heading", getHeading());
+        SmartDashboard.putNumber("Gyro/Heading", getHeading());
         //SmartDashboard.putNumber("Gyro Roll", gyro.getRoll());
         //SmartDashboard.putNumber("Gyro Pitch", gyro.getPitch());
 
