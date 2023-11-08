@@ -1,0 +1,40 @@
+package frc.robot.subsystems;
+
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
+import frc.robot.constants.IDs;
+
+public class RabbitIntakeSubsystem {
+    private final double INTAKE_DEFAULT_SPEED = 0.1; //Increase after testing
+    
+    private final TalonSRX intakeMotor = new TalonSRX(IDs.TALONSRX_MOTOR);
+    private double speed;
+
+    public void periodic() {
+        double limitedSpeed = 0; //Needs to change?
+        intakeMotor.set(TalonSRXControlMode.PercentOutput, limitedSpeed);
+    }
+
+    public void startIntake(double speed) {
+        this.speed = speed;
+    }
+
+    public void startIntake() {
+        startIntake(INTAKE_DEFAULT_SPEED);
+    }
+
+    public void setIntakeSpeed(double speed) {
+        intakeMotor.set(TalonSRXControlMode.PercentOutput, speed);
+    }
+
+    public void stop() {
+        speed = 0;
+        intakeMotor.set(TalonSRXControlMode.PercentOutput, 0);
+    }
+    
+
+    
+    
+
+}

@@ -4,12 +4,16 @@
 
 package frc.robot;
 
+import com.revrobotics.CANSparkMax;
+
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import frc.robot.commands.Auto2;
 import frc.robot.commands.AutoTest;
 import frc.robot.commands.DriveFromControllerCommand;
@@ -24,29 +28,31 @@ import frc.robot.subsystems.SwerveSubsystem;
  */
 public class RobotContainer {
 
-  private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+  //private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   
   private final XboxController driverController = new XboxController(IDs.CONTROLLER_DRIVE_PORT);
+  private final CANSparkMax motor = new CANSparkMax(20, MotorType.kBrushless);
   private final SendableChooser<Command> chooser = new SendableChooser<>();
 
-  private final DriveFromControllerCommand driveFromControllerCommand = 
-    new DriveFromControllerCommand(
-      swerveSubsystem,
-      driverController::getLeftX,
-      driverController::getLeftY,
-      driverController::getRightX,
-      driverController::getRightY,
-      driverController::getYButton,
-      driverController::getBButton,
-      driverController::getAButton,
-      driverController::getXButton,
-      driverController::getLeftTriggerAxis,
-      driverController::getRightTriggerAxis,
-      driverController::getPOV);
+  // private final DriveFromControllerCommand driveFromControllerCommand = 
+  //   new DriveFromControllerCommand(
+  //     swerveSubsystem,
+  //     driverController::getLeftX,
+  //     driverController::getLeftY,
+  //     driverController::getRightX,
+  //     driverController::getRightY,
+  //     driverController::getYButton,
+  //     driverController::getBButton,
+  //     driverController::getAButton,
+  //     driverController::getXButton,
+  //     driverController::getLeftTriggerAxis,
+  //     driverController::getRightTriggerAxis,
+  //     driverController::getPOV);
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    swerveSubsystem.setDefaultCommand(driveFromControllerCommand);
+    // swerveSubsystem.setDefaultCommand(driveFromControllerCommand);
     configureAutoChooser();
     SmartDashboard.putData(chooser);
     // Configure the trigger bindings
@@ -55,20 +61,22 @@ public class RobotContainer {
 
   /** Will run once any time the robot is enabled, in any mode (Doesn't matter if Teleop / Autonomous) */
   public void onEnable() {
-    swerveSubsystem.onEnable();
-    swerveSubsystem.setBrakeMode(true);
+    //swerveSubsystem.onEnable();
+    //swerveSubsystem.setBrakeMode(true);
   }
-
+  public void teleopPeriodic() {
+    motor.set(driverController.getLeftY());
+  }
   public void resetGyro() {
-    swerveSubsystem.zeroHeading();
+    //swerveSubsystem.zeroHeading();
   }
   private void configureAutoChooser() {
-    chooser.setDefaultOption("Drive Distance", new AutoTest(swerveSubsystem));
-    chooser.addOption("auto 2", new Auto2(swerveSubsystem));
+    // chooser.setDefaultOption("Drive Distance", new AutoTest(swerveSubsystem));
+    // chooser.addOption("auto 2", new Auto2(swerveSubsystem));
   }
   /** Will run once any time the robot is disabled. */
   public void onDisable() {
-    swerveSubsystem.setBrakeMode(false);
+    // swerveSubsystem.setBrakeMode(false);
   }
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the

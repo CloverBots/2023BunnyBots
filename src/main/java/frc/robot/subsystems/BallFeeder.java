@@ -1,0 +1,24 @@
+package frc.robot.subsystems;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import frc.robot.constants.IDs;
+
+public class BallFeeder {
+    private final int CURRENT_LIMIT = 10;
+
+    private final CANSparkMax motor = new CANSparkMax(IDs.FEEDER_DEVICE, MotorType.kBrushless);
+
+    /** Creates a new FeederSubsystem. */
+    public BallFeeder() {
+
+        motor.setInverted(true);
+    }
+
+    public void setSpeed(double speed) {
+        motor.set(speed);
+    }
+
+}
