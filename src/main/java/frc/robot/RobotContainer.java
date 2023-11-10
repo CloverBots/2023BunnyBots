@@ -16,9 +16,11 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import frc.robot.commands.Auto2;
 import frc.robot.commands.AutoTest;
+import frc.robot.commands.BallIntakeCommand;
 import frc.robot.commands.DriveFromControllerCommand;
 import frc.robot.commands.RabbitIntakeCommand;
 import frc.robot.constants.IDs;
+import frc.robot.subsystems.BallIntakeSubsystem;
 import frc.robot.subsystems.RabbitIntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
@@ -53,11 +55,14 @@ public class RobotContainer {
   //     driverController::getPOV);
 
   private final RabbitIntakeSubsystem rabbitIntakeSubsystem = new RabbitIntakeSubsystem();
+  private final BallIntakeSubsystem ballIntakeSubsystem = new BallIntakeSubsystem();
   private final RabbitIntakeCommand rabbitIntakeCommand = new RabbitIntakeCommand(rabbitIntakeSubsystem, operatorController::getRightTriggerAxis, operatorController::getLeftTriggerAxis);
+  private final BallIntakeCommand ballIntakeCommand = new BallIntakeCommand(ballIntakeSubsystem, operatorController::getLeftY);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // swerveSubsystem.setDefaultCommand(driveFromControllerCommand);
     rabbitIntakeSubsystem.setDefaultCommand(rabbitIntakeCommand);
+    ballIntakeSubsystem.setDefaultCommand(ballIntakeCommand);
     configureAutoChooser();
     SmartDashboard.putData(chooser);
     // Configure the trigger bindings
