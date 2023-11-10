@@ -4,9 +4,10 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.IDs;
 
-public class BallFeeder {
+public class BallFeeder extends SubsystemBase{
     private final int CURRENT_LIMIT = 10;
 
     private final CANSparkMax motor = new CANSparkMax(IDs.FEEDER_DEVICE, MotorType.kBrushless);

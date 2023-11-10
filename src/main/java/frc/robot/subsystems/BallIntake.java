@@ -5,9 +5,10 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.IDs;
 
-public class BallIntake {
+public class BallIntake extends SubsystemBase {
     private final int CURRENT_LIMIT = 10;
 
     private final CANSparkMax motor = new CANSparkMax(IDs.INTAKE_DEVICE, MotorType.kBrushless);

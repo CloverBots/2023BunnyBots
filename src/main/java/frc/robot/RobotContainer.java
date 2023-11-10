@@ -17,7 +17,9 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import frc.robot.commands.Auto2;
 import frc.robot.commands.AutoTest;
 import frc.robot.commands.DriveFromControllerCommand;
+import frc.robot.commands.RabbitIntakeCommand;
 import frc.robot.constants.IDs;
+import frc.robot.subsystems.RabbitIntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 /**
@@ -31,6 +33,7 @@ public class RobotContainer {
   //private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   
   private final XboxController driverController = new XboxController(IDs.CONTROLLER_DRIVE_PORT);
+  private final XboxController operatorController = new XboxController(IDs.CONTROLLER_OPERATOR_PORT);
   private final CANSparkMax motor = new CANSparkMax(20, MotorType.kBrushless);
   private final SendableChooser<Command> chooser = new SendableChooser<>();
 
@@ -49,10 +52,12 @@ public class RobotContainer {
   //     driverController::getRightTriggerAxis,
   //     driverController::getPOV);
 
-
+  private final RabbitIntakeSubsystem rabbitIntakeSubsystem = new RabbitIntakeSubsystem();
+  private final RabbitIntakeCommand rabbitIntakeCommand = new RabbitIntakeCommand(rabbitIntakeSubsystem, operatorController::getRightTriggerAxis, operatorController::getLeftTriggerAxis);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // swerveSubsystem.setDefaultCommand(driveFromControllerCommand);
+    rabbitIntakeSubsystem.setDefaultCommand(rabbitIntakeCommand);
     configureAutoChooser();
     SmartDashboard.putData(chooser);
     // Configure the trigger bindings
