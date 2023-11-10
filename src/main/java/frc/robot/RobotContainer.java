@@ -34,7 +34,7 @@ public class RobotContainer {
   
   private final XboxController driverController = new XboxController(IDs.CONTROLLER_DRIVE_PORT);
   private final XboxController operatorController = new XboxController(IDs.CONTROLLER_OPERATOR_PORT);
-  private final CANSparkMax motor = new CANSparkMax(20, MotorType.kBrushless);
+  //private final CANSparkMax motor = new CANSparkMax(20, MotorType.kBrushless);
   private final SendableChooser<Command> chooser = new SendableChooser<>();
 
   // private final DriveFromControllerCommand driveFromControllerCommand = 
@@ -70,7 +70,7 @@ public class RobotContainer {
     //swerveSubsystem.setBrakeMode(true);
   }
   public void teleopPeriodic() {
-    motor.set(driverController.getLeftY());
+    //motor.set(driverController.getLeftY());
   }
   public void resetGyro() {
     //swerveSubsystem.zeroHeading();
