@@ -7,10 +7,10 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.IDs;
 
-public class RabbitDeploy extends SubsystemBase {
+public class BallDeploySubsystem extends SubsystemBase{
     private final int CURRENT_LIMIT = 10;
 
-    private final CANSparkMax motor = new CANSparkMax(IDs.RABBIT_DEPLOY_DEVICE, MotorType.kBrushless);
+    private final CANSparkMax motor = new CANSparkMax(IDs.BALL_DEPLOY, MotorType.kBrushless);
 
     public static final double LOWER_ENDPOINT = 0; 
 
@@ -38,5 +38,5 @@ public class RabbitDeploy extends SubsystemBase {
 
     public void resetEncoder() {
         motor.getEncoder().setPosition(0);
-    }   
+    }
 }
