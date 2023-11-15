@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -20,9 +21,11 @@ import frc.robot.commands.BallIntakeCommand;
 import frc.robot.commands.DriveFromControllerCommand;
 import frc.robot.commands.RabbitIntakeCommand;
 import frc.robot.constants.IDs;
+import frc.robot.subsystems.BallDeploySubsystem;
 import frc.robot.subsystems.BallIntakeSubsystem;
 import frc.robot.subsystems.RabbitIntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.commands.BallDeployCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -54,15 +57,22 @@ public class RobotContainer {
   //     driverController::getRightTriggerAxis,
   //     driverController::getPOV);
 
-  private final RabbitIntakeSubsystem rabbitIntakeSubsystem = new RabbitIntakeSubsystem();
-  private final BallIntakeSubsystem ballIntakeSubsystem = new BallIntakeSubsystem();
-  private final RabbitIntakeCommand rabbitIntakeCommand = new RabbitIntakeCommand(rabbitIntakeSubsystem, operatorController::getRightTriggerAxis, operatorController::getLeftTriggerAxis);
-  private final BallIntakeCommand ballIntakeCommand = new BallIntakeCommand(ballIntakeSubsystem, operatorController::getLeftY);
+  // private final RabbitIntakeSubsystem rabbitIntakeSubsystem = new RabbitIntakeSubsystem();
+  // private final BallIntakeSubsystem ballIntakeSubsystem = new BallIntakeSubsystem();
+  private final BallDeploySubsystem ballDeploySubsystem = new BallDeploySubsystem();
+
+  // private final RabbitIntakeCommand rabbitIntakeCommand = new RabbitIntakeCommand(rabbitIntakeSubsystem, operatorController::getRightTriggerAxis, operatorController::getLeftTriggerAxis);
+  // private final BallIntakeCommand ballIntakeCommand = new BallIntakeCommand(ballIntakeSubsystem, operatorController::getLeftY);
+  // TO-DO find correct position and speed
+  private final BallDeployCommand BallDeployUpCommand = new BallDeployCommand(ballDeploySubsystem, 8, 0.1);
+  private final BallDeployCommand BallDeployDownCommand = new BallDeployCommand(ballDeploySubsystem, 5, 0.1);
+
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // swerveSubsystem.setDefaultCommand(driveFromControllerCommand);
-    rabbitIntakeSubsystem.setDefaultCommand(rabbitIntakeCommand);
-    ballIntakeSubsystem.setDefaultCommand(ballIntakeCommand);
+    // rabbitIntakeSubsystem.setDefaultCommand(rabbitIntakeCommand);
+    // ballIntakeSubsystem.setDefaultCommand(ballIntakeCommand);
     configureAutoChooser();
     SmartDashboard.putData(chooser);
     // Configure the trigger bindings
@@ -98,6 +108,10 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    JoystickButton ballDeployUpButton = new JoystickButton(operatorController, XboxController.Button.kY.value);
+    JoystickButton ballDeployDownButton = new JoystickButton(operatorController, XboxController.Button.kA.value);
+    ballDeployUpButton.onTrue(BallDeployUpCommand);
+    ballDeployDownButton.onTrue(BallDeployDownCommand);
   }
 
   /**
