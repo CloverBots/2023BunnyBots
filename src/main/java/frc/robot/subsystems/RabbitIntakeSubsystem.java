@@ -13,7 +13,6 @@ public class RabbitIntakeSubsystem extends SubsystemBase {
     private double speed;
 
     public void periodic() {
-        //double limitedSpeed = 0; //Needs to change?
         intakeMotor.set(TalonSRXControlMode.PercentOutput, speed);
     }
 

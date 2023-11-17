@@ -2,35 +2,30 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.RabbitIntakeSubsystem;
 
 public class RabbitIntakeCommand extends CommandBase{
     private final RabbitIntakeSubsystem rabbitIntakeSubsystem;
-    private DoubleSupplier inSpeed;
-    private DoubleSupplier outSpeed;
+    private final DoubleSupplier rightJoystickY;
 
-    public RabbitIntakeCommand(RabbitIntakeSubsystem rabbitIntakeSubsystem, DoubleSupplier inSpeed, DoubleSupplier outSpeed) {
+    public RabbitIntakeCommand(RabbitIntakeSubsystem rabbitIntakeSubsystem, DoubleSupplier rightJoystickY) {
         this.rabbitIntakeSubsystem = rabbitIntakeSubsystem;
-        this.inSpeed = inSpeed;
-        this.outSpeed = outSpeed;
+        this.rightJoystickY = rightJoystickY;
         addRequirements(rabbitIntakeSubsystem);
     }
 
     @Override
     public void execute() {
-        double in = inSpeed.getAsDouble();
-        double out = outSpeed.getAsDouble();
-        double speed = 0;
+        double speed = -rightJoystickY.getAsDouble() * .5;
 
-        if (in > 0.05 && out < 0.05) {
-            speed = in;
-        } else if (in < 0.05 && out > 0.05) {
-            speed = -out;
-        } else {
+        if (Math.abs(speed) < 0.05) {
             speed = 0;
         }
+
         rabbitIntakeSubsystem.setIntakeSpeed(speed);
     }
 

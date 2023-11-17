@@ -8,23 +8,30 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.BallIntakeSubsystem;
 
 public class BallIntakeCommand extends CommandBase {
-    private final DoubleSupplier leftJoystickY;
+    private final DoubleSupplier inSpeed;
+    private final DoubleSupplier outSpeed;
     private final BallIntakeSubsystem ballIntakeSubsystem;
 
-    public BallIntakeCommand(BallIntakeSubsystem ballIntakeSubsystem, DoubleSupplier leftJoystickY) {
+    public BallIntakeCommand(BallIntakeSubsystem ballIntakeSubsystem, DoubleSupplier inSpeed, DoubleSupplier outSpeed) {
         this.ballIntakeSubsystem = ballIntakeSubsystem;
-        this.leftJoystickY = leftJoystickY;
+        this.inSpeed = inSpeed;
+        this.outSpeed = outSpeed;
         addRequirements(ballIntakeSubsystem);
     }
 
     @Override
     public void execute() {
-        double speed = -leftJoystickY.getAsDouble() * .5;
+        double in = inSpeed.getAsDouble();
+        double out = outSpeed.getAsDouble();
+        double speed = 0;
 
-        if (Math.abs(speed) < 0.05) {
+        if (in > 0.05 && out < 0.05) {
+            speed = in;
+        } else if (in < 0.05 && out > 0.05) {
+            speed = -out;
+        } else {
             speed = 0;
         }
-
         ballIntakeSubsystem.setIntakeSpeed(speed);
     }
 
