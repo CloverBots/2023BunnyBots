@@ -14,7 +14,7 @@ public class RabbitDeploySubsystem extends SubsystemBase {
 
     public static final double LOWER_ENDPOINT = 0; 
 
-    public static final double UPPER_ENDPOINT = 10; //Needs to be updated 
+    public static final double UPPER_ENDPOINT = 100; //Needs to be updated 
 
     public void RabbitDeploySubsystem() {
         motor.setSmartCurrentLimit(CURRENT_LIMIT);

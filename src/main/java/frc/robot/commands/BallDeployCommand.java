@@ -25,8 +25,7 @@ public class BallDeployCommand extends CommandBase{
         if (ballDeploySubsystem.getEncoderPosition() > position) {
             direction = -1;
         }
-
-        if (Math.abs(ballDeploySubsystem.getEncoderPosition() - position) < .2) {
+        if (Math.abs(ballDeploySubsystem.getEncoderPosition() - position) < 3) {
             direction = 0;
         }
     }
@@ -39,13 +38,11 @@ public class BallDeployCommand extends CommandBase{
     @Override
     public void end(boolean interrupted) {
         ballDeploySubsystem.setDeploySpeed(0);
+        System.out.println(ballDeploySubsystem.getEncoderPosition());
     }
 
     @Override
     public boolean isFinished() {
-        SmartDashboard.putNumber("Ball Deplay position", ballDeploySubsystem.getEncoderPosition());
-        SmartDashboard.putNumber("Ball Deplay dir", direction);
-        SmartDashboard.putNumber("Ball Deplay pos", position);
         if (direction == -1 && ballDeploySubsystem.getEncoderPosition() <= position) {
             return true;
         } else if (direction == 1 && ballDeploySubsystem.getEncoderPosition() >= position) {
