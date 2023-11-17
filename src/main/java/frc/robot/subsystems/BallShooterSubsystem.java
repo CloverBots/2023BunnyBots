@@ -7,13 +7,13 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.IDs;
 
-public class BallFeederSubsystem extends SubsystemBase{
+public class BallShooterSubsystem extends SubsystemBase{
     private final int CURRENT_LIMIT = 10;
 
-    private final CANSparkMax motor = new CANSparkMax(IDs.FEEDER_DEVICE, MotorType.kBrushless);
+    private final CANSparkMax motor = new CANSparkMax(IDs.SHOOTER_DEVICE, MotorType.kBrushless);
 
     /** Creates a new FeederSubsystem. */
-    public BallFeederSubsystem() {
+    public BallShooterSubsystem() {
 
         motor.setInverted(true);
     }
@@ -22,4 +22,11 @@ public class BallFeederSubsystem extends SubsystemBase{
         motor.set(speed);
     }
 
+    public double getEncoderPosition() {
+        return motor.getEncoder().getPosition(); 
+      }
+
+    public void resetEncoder() {
+        motor.getEncoder().setPosition(0);
+    }
 }

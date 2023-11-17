@@ -20,6 +20,6 @@ public final class IDs {
   public static final int TALONSRX_MOTOR = 05; // Update when assigned
   public static final int RABBIT_DEPLOY_DEVICE = 20; //Update when assigned
   public static final int INTAKE_DEVICE = 22; // same
-  public static final int FEEDER_DEVICE = 2; // same
   public static final int BALL_DEPLOY = 21; // same
+  public static final int SHOOTER_DEVICE = 20; // same
 }
