@@ -42,7 +42,7 @@ public class DriveToDistanceCommand extends CommandBase {
     driveDistanceControllerY.setTolerance(0.005);
     rotationController.setSetpoint(angle);
     rotationController.setTolerance(0.005);
-    rotationController.enableContinuousInput(0, 2*Math.PI);
+    rotationController.enableContinuousInput(0, 2*Math.PI); // Sets the PID to treat zero and 2 pi as the same value.
   }
 
   // Called when the command is initially scheduled.
