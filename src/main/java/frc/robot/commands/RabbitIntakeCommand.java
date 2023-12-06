@@ -10,17 +10,17 @@ import frc.robot.subsystems.RabbitIntakeSubsystem;
 
 public class RabbitIntakeCommand extends CommandBase{
     private final RabbitIntakeSubsystem rabbitIntakeSubsystem;
-    private final DoubleSupplier rightJoystickY;
+    private final DoubleSupplier leftJoystickY;
 
-    public RabbitIntakeCommand(RabbitIntakeSubsystem rabbitIntakeSubsystem, DoubleSupplier rightJoystickY) {
+    public RabbitIntakeCommand(RabbitIntakeSubsystem rabbitIntakeSubsystem, DoubleSupplier leftJoystickY) {
         this.rabbitIntakeSubsystem = rabbitIntakeSubsystem;
-        this.rightJoystickY = rightJoystickY;
+        this.leftJoystickY = leftJoystickY;
         addRequirements(rabbitIntakeSubsystem);
     }
 
     @Override
     public void execute() {
-        double speed = -rightJoystickY.getAsDouble() * .5;
+        double speed = -leftJoystickY.getAsDouble() * 0.7;
 
         if (Math.abs(speed) < 0.05) {
             speed = 0;

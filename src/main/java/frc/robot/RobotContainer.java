@@ -40,27 +40,26 @@ import frc.robot.commands.BallDeployCommand;
  */
 public class RobotContainer {
 
-  //private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+  private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   
   private final XboxController driverController = new XboxController(IDs.CONTROLLER_DRIVE_PORT);
   private final XboxController operatorController = new XboxController(IDs.CONTROLLER_OPERATOR_PORT);
-  //private final CANSparkMax motor = new CANSparkMax(20, MotorType.kBrushless);
   private final SendableChooser<Command> chooser = new SendableChooser<>();
 
-  // private final DriveFromControllerCommand driveFromControllerCommand = 
-  //   new DriveFromControllerCommand(
-  //     swerveSubsystem,
-  //     driverController::getLeftX,
-  //     driverController::getLeftY,
-  //     driverController::getRightX,
-  //     driverController::getRightY,
-  //     driverController::getYButton,
-  //     driverController::getBButton,
-  //     driverController::getAButton,
-  //     driverController::getXButton,
-  //     driverController::getLeftTriggerAxis,
-  //     driverController::getRightTriggerAxis,
-  //     driverController::getPOV);
+  private final DriveFromControllerCommand driveFromControllerCommand = 
+    new DriveFromControllerCommand(
+      swerveSubsystem,
+      driverController::getLeftX,
+      driverController::getLeftY,
+      driverController::getRightX,
+      driverController::getRightY,
+      driverController::getYButton,
+      driverController::getBButton,
+      driverController::getAButton,
+      driverController::getXButton,
+      driverController::getLeftTriggerAxis,
+      driverController::getRightTriggerAxis,
+      driverController::getPOV);
 
   private final RabbitIntakeSubsystem rabbitIntakeSubsystem = new RabbitIntakeSubsystem();
   private final RabbitDeploySubsystem rabbitDeploySubsystem = new RabbitDeploySubsystem();
@@ -68,19 +67,19 @@ public class RobotContainer {
   // private final BallDeploySubsystem ballDeploySubsystem = new BallDeploySubsystem();
   // private final BallShooterSubsystem ballShooterSubsystem = new BallShooterSubsystem();
 
-  private final RabbitIntakeCommand rabbitIntakeCommand = new RabbitIntakeCommand(rabbitIntakeSubsystem, operatorController::getRightY);
+  private final RabbitIntakeCommand rabbitIntakeCommand = new RabbitIntakeCommand(rabbitIntakeSubsystem, operatorController::getLeftY);
   // private final BallIntakeCommand ballIntakeCommand = new BallIntakeCommand(ballIntakeSubsystem, operatorController::getLeftTriggerAxis, operatorController::getRightTriggerAxis);
   // TO-DO find correct position and speed
   // private final BallDeployCommand BallDeployUpCommand = new BallDeployCommand(ballDeploySubsystem, 15, 0.1);
   // private final BallDeployCommand BallDeployDownCommand = new BallDeployCommand(ballDeploySubsystem, 5, 0.1);
-  private final RabbitDeployCommand RabbitDeployGroundCommand = new RabbitDeployCommand(rabbitDeploySubsystem, 25);
-  private final RabbitDeployCommand RabbitDeployBinCommand = new RabbitDeployCommand(rabbitDeploySubsystem, 50);
-  // private final RabbitDeployCommand RabbitDeployUpCommand = new RabbitDeployCommand(rabbitDeploySubsystem, 50, 0.1);
+  private final RabbitDeployCommand RabbitDeployGroundCommand = new RabbitDeployCommand(rabbitDeploySubsystem, -34.0);
+  private final RabbitDeployCommand RabbitDeployBinCommand = new RabbitDeployCommand(rabbitDeploySubsystem, -18.1); // -18.16
+  private final RabbitDeployCommand RabbitDeployUpCommand = new RabbitDeployCommand(rabbitDeploySubsystem, 0);
   // private final BallShooterCommand ballShooterCommand = new BallShooterCommand(ballShooterSubsystem, 50);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // swerveSubsystem.setDefaultCommand(driveFromControllerCommand);
+    swerveSubsystem.setDefaultCommand(driveFromControllerCommand);
     rabbitIntakeSubsystem.setDefaultCommand(rabbitIntakeCommand);
     // ballIntakeSubsystem.setDefaultCommand(ballIntakeCommand);
     configureAutoChooser();
@@ -91,14 +90,13 @@ public class RobotContainer {
 
   /** Will run once any time the robot is enabled, in any mode (Doesn't matter if Teleop / Autonomous) */
   public void onEnable() {
-    //swerveSubsystem.onEnable();
-    //swerveSubsystem.setBrakeMode(true);
+    swerveSubsystem.onEnable();
+    swerveSubsystem.setBrakeMode(true);
   }
   public void teleopPeriodic() {
-    //motor.set(driverController.getLeftY());
   }
   public void resetGyro() {
-    //swerveSubsystem.zeroHeading();
+    swerveSubsystem.zeroHeading();
   }
   private void configureAutoChooser() {
     // chooser.setDefaultOption("Drive Distance", new AutoTest(swerveSubsystem));
@@ -106,7 +104,7 @@ public class RobotContainer {
   }
   /** Will run once any time the robot is disabled. */
   public void onDisable() {
-    // swerveSubsystem.setBrakeMode(false);
+    swerveSubsystem.setBrakeMode(false);
   }
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
@@ -118,18 +116,18 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    JoystickButton ballDeployUpButton = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
-    JoystickButton ballDeployDownButton = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
+    // JoystickButton ballDeployUpButton = new JoystickButton(operatorController, XboxController.Button.kRightBumper.value);
+    // JoystickButton ballDeployDownButton = new JoystickButton(operatorController, XboxController.Button.kLeftBumper.value);
     JoystickButton rabbitDeployGroundButton = new JoystickButton(operatorController, XboxController.Button.kA.value);
     JoystickButton rabbitDeployBinButton = new JoystickButton(operatorController, XboxController.Button.kB.value);
     JoystickButton rabbitDeployUpButton = new JoystickButton(operatorController, XboxController.Button.kY.value);
-    POVButton dPadUpButton = new POVButton(operatorController, 0);
+    // POVButton dPadUpButton = new POVButton(operatorController, 0);
     
     // ballDeployUpButton.onTrue(BallDeployUpCommand);
     // ballDeployDownButton.onTrue(BallDeployDownCommand);
     rabbitDeployGroundButton.onTrue(RabbitDeployGroundCommand);
     rabbitDeployBinButton.onTrue(RabbitDeployBinCommand);
-    // rabbitDeployUpButton.onTrue(RabbitDeployUpCommand);
+    rabbitDeployUpButton.onTrue(RabbitDeployUpCommand);
     // dPadUpButton.onTrue(ballShooterCommand);
   }
 

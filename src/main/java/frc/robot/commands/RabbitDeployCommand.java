@@ -10,7 +10,7 @@ public class RabbitDeployCommand extends CommandBase {
 
     private final RabbitDeploySubsystem rabbitDeploySubsystem;
     private double position;
-    public PIDController rabbitDeployPID = new PIDController(0.01, 0.003, 0);
+    public PIDController rabbitDeployPID = new PIDController(0.04, 0.003, 0);
 
     public RabbitDeployCommand(RabbitDeploySubsystem rabbitDeploySubsystem, double position) {
         this.rabbitDeploySubsystem = rabbitDeploySubsystem;
@@ -35,7 +35,7 @@ public class RabbitDeployCommand extends CommandBase {
     @Override
     public void execute() {
         double speed = rabbitDeployPID.calculate(rabbitDeploySubsystem.getEncoderPosition(), position);
-        speed = MathUtil.clamp(speed, -0.2, 0.2);
+        speed = MathUtil.clamp(speed, -0.8, 0.8);
         rabbitDeploySubsystem.setDeploySpeed(speed);
         SmartDashboard.putNumber("Rabbit Deploy Encoder", rabbitDeploySubsystem.getEncoderPosition());
     }
