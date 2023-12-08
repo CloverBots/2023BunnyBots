@@ -20,7 +20,7 @@ public class RabbitIntakeCommand extends CommandBase{
 
     @Override
     public void execute() {
-        double speed = -leftJoystickY.getAsDouble() * 0.7;
+        double speed = -leftJoystickY.getAsDouble();
 
         if (Math.abs(speed) < 0.05) {
             speed = 0;
