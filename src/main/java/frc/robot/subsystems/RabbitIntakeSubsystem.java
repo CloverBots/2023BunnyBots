@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.IDs;
 
 public class RabbitIntakeSubsystem extends SubsystemBase {
-    private final double INTAKE_DEFAULT_SPEED = 0.1; //Increase after testing
+    private final double INTAKE_DEFAULT_SPEED = 1.0; //Increase after testing
     
     private final TalonSRX intakeMotor = new TalonSRX(IDs.TALONSRX_MOTOR);
     private double speed;

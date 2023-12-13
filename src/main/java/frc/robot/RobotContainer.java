@@ -16,8 +16,10 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import frc.robot.commands.Auto2;
-import frc.robot.commands.AutoTest;
+
+import frc.robot.commands.AutoBinCrash;
+import frc.robot.commands.AutoNothing;
+import frc.robot.commands.AutoRabbit;
 import frc.robot.commands.BallIntakeCommand;
 import frc.robot.commands.BallShooterCommand;
 import frc.robot.commands.DriveFromControllerCommand;
@@ -99,8 +101,9 @@ public class RobotContainer {
     swerveSubsystem.zeroHeading();
   }
   private void configureAutoChooser() {
-    // chooser.setDefaultOption("Drive Distance", new AutoTest(swerveSubsystem));
-    // chooser.addOption("auto 2", new Auto2(swerveSubsystem));
+    chooser.setDefaultOption("Get Rabbit", new AutoRabbit(swerveSubsystem, rabbitDeploySubsystem, rabbitIntakeSubsystem));
+    chooser.addOption("Nothing", new AutoNothing(swerveSubsystem));
+    chooser.addOption("Tote Crash", new AutoBinCrash(swerveSubsystem));
   }
   /** Will run once any time the robot is disabled. */
   public void onDisable() {
