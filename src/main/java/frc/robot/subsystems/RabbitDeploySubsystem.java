@@ -4,7 +4,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.IDs;
@@ -18,18 +17,32 @@ public class RabbitDeploySubsystem extends SubsystemBase {
 
     public static final double UPPER_ENDPOINT = 0; //Needs to be updated 
 
-    public void RabbitDeploySubsystem() {
+    public RabbitDeploySubsystem() {
         motor.setSmartCurrentLimit(CURRENT_LIMIT);
     
         motor.setIdleMode(IdleMode.kBrake);
     
         motor.setInverted(false);
+
+        SmartDashboard.putBoolean("Reset Deploy Encoder", false);
+        SmartDashboard.putBoolean("Toggle Deploy Brake", true);
+
     }
 
     @Override
     public void periodic() {
-        // TODO Auto-generated method stub
         SmartDashboard.putNumber("Deploy Encoder", getEncoderPosition());
+
+        if (SmartDashboard.getBoolean("Reset Deploy Encoder", false)) {
+            resetEncoder();
+            SmartDashboard.putBoolean("Reset Deploy Encoder", false);
+        }
+
+        if (SmartDashboard.getBoolean("Reset Deploy Brake", true)) {
+            motor.setIdleMode(IdleMode.kBrake);
+        } else {
+            motor.setIdleMode(IdleMode.kCoast);
+        }
     }
 
     public void setDeploySpeed(double speed) {
