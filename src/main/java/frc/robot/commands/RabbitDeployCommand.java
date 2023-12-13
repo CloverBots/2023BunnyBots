@@ -15,7 +15,7 @@ public class RabbitDeployCommand extends CommandBase {
     public RabbitDeployCommand(RabbitDeploySubsystem rabbitDeploySubsystem, double position) {
         this.rabbitDeploySubsystem = rabbitDeploySubsystem;
         this.position = position;
-        rabbitDeployPID.setTolerance(0.005);
+        rabbitDeployPID.setTolerance(0.01);
         // TO-DO limit position values
         addRequirements(rabbitDeploySubsystem);
     }

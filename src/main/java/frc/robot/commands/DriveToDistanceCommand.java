@@ -9,6 +9,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.constants.SwerveDriveConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 
 /**
@@ -56,10 +57,10 @@ public class DriveToDistanceCommand extends CommandBase {
   @Override
   public void execute() {
     double xSpeed = driveDistanceControllerX.calculate(swerveSubsystem.getPose().getX());
-    xSpeed = Math.copySign(Math.min(Math.abs(xSpeed),1), xSpeed);
+    xSpeed = Math.copySign(Math.min(Math.abs(xSpeed), SwerveDriveConstants.AUTO_MAX_SPEED), xSpeed);
 
     double ySpeed = driveDistanceControllerY.calculate(swerveSubsystem.getPose().getY());
-    ySpeed = Math.copySign(Math.min(Math.abs(ySpeed),1), ySpeed);
+    ySpeed = Math.copySign(Math.min(Math.abs(ySpeed), SwerveDriveConstants.AUTO_MAX_SPEED), ySpeed);
 
     double dTheta = rotationController.calculate(Units.degreesToRadians(swerveSubsystem.getHeading()));
     dTheta = Math.copySign(Math.min(Math.abs(dTheta),2), dTheta);

@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import frc.robot.commands.AutoBinCrash;
 import frc.robot.commands.AutoNothing;
 import frc.robot.commands.AutoRabbit;

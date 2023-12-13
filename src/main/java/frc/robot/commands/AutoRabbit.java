@@ -22,12 +22,12 @@ public class AutoRabbit extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new ResetOdometryCommand(swerveSubsystem),
-      new DriveToDistanceCommand(swerveSubsystem, -Units.inchesToMeters(247), 0, 0, 5),
-      new RabbitDeployCommand(rabbitDeploySubsystem, -18.1),
+      new DriveToDistanceCommand(swerveSubsystem, -Units.inchesToMeters(252), 0, 0, 5),
+      new RabbitDeployCommand(rabbitDeploySubsystem, -18.1).raceWith(new WaitCommand(1)),
       new InstantCommand(() -> rabbitIntakeSubsystem.startIntake(), rabbitIntakeSubsystem),
       new WaitCommand(.5),
       new InstantCommand(() -> rabbitIntakeSubsystem.startIntake(0), rabbitIntakeSubsystem),
-      new RabbitDeployCommand(rabbitDeploySubsystem, 0),
+      new RabbitDeployCommand(rabbitDeploySubsystem, 0).raceWith(new WaitCommand(1)),
       new DriveToDistanceCommand(swerveSubsystem, 0, 0, 0, 5));
   }
 }
