@@ -4,28 +4,24 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.subsystems.RabbitDeploySubsystem;
-import frc.robot.subsystems.RabbitIntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AutoTest extends SequentialCommandGroup {
-  /** Creates a new AutoTest. */
-  public AutoTest(SwerveSubsystem swerveSubsystem, RabbitDeploySubsystem rabbitDeploySubsystem, RabbitIntakeSubsystem rabbitIntakeSubsystem) {
+public class Auto2 extends SequentialCommandGroup {
+  /** Creates a new Auto2. */
+  public Auto2(SwerveSubsystem swerveSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
+    addRequirements(swerveSubsystem);
     addCommands(
       new ResetOdometryCommand(swerveSubsystem),
-      new DriveToDistanceCommand(swerveSubsystem, -Units.inchesToMeters(247), 0, 0, 5)
-      // new RabbitDeployCommand(rabbitDeploySubsystem, 0.0)
-      // new WaitCommand(1),
-      // new DriveToDistanceCommand(swerveSubsystem, 0, 0, 0, 3)
-
+      new DriveToDistanceCommand(swerveSubsystem, -2, 0.5, Math.PI, 3),
+      new WaitCommand(1),
+      new DriveToDistanceCommand(swerveSubsystem, 0, 0, 0, 3)
     );
   }
 }
