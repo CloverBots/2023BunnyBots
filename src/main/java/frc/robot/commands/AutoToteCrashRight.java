@@ -19,8 +19,8 @@ public class AutoToteCrashRight extends SequentialCommandGroup {
     addRequirements(swerveSubsystem);
     addCommands(
       new ResetOdometryCommand(swerveSubsystem),
-      new DriveToDistanceCommand(swerveSubsystem, -Units.inchesToMeters(262), 0, 0, 5),
-      new DriveToDistanceCommand(swerveSubsystem, -Units.inchesToMeters(262), Units.inchesToMeters(50), 0, 5)
+      new DriveToDistanceCommand(swerveSubsystem, -Units.inchesToMeters(272), 0, 0, 3),
+      new DriveToDistanceCommand(swerveSubsystem, -Units.inchesToMeters(272), Units.inchesToMeters(80), 0, 5)
     );
   }
 }
