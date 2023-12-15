@@ -4,23 +4,23 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.SwerveSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AutoBinCrash extends SequentialCommandGroup {
+public class AutoToteCrashRight extends SequentialCommandGroup {
   /** Creates a new Auto2. */
-  public AutoBinCrash(SwerveSubsystem swerveSubsystem) {
+  public AutoToteCrashRight(SwerveSubsystem swerveSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addRequirements(swerveSubsystem);
     addCommands(
       new ResetOdometryCommand(swerveSubsystem),
-      new DriveToDistanceCommand(swerveSubsystem, -1, 0, 0, 3),
-      new DriveToDistanceCommand(swerveSubsystem, 0, 0, 0, 3)
+      new DriveToDistanceCommand(swerveSubsystem, -Units.inchesToMeters(262), 0, 0, 5),
+      new DriveToDistanceCommand(swerveSubsystem, -Units.inchesToMeters(262), Units.inchesToMeters(50), 0, 5)
     );
   }
 }

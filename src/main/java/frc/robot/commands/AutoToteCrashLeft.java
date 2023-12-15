@@ -11,15 +11,16 @@ import frc.robot.subsystems.SwerveSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AutoNothing extends SequentialCommandGroup {
+public class AutoToteCrashLeft extends SequentialCommandGroup {
   /** Creates a new Auto2. */
-  public AutoNothing(SwerveSubsystem swerveSubsystem) {
+  public AutoToteCrashLeft(SwerveSubsystem swerveSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addRequirements(swerveSubsystem);
     addCommands(
       new ResetOdometryCommand(swerveSubsystem),
-      new DriveToDistanceCommand(swerveSubsystem, -Units.inchesToMeters(40), 0, 0, 3)
+      new DriveToDistanceCommand(swerveSubsystem, -Units.inchesToMeters(262), 0, 0, 5),
+      new DriveToDistanceCommand(swerveSubsystem, -Units.inchesToMeters(262), -Units.inchesToMeters(50), 0, 5)
     );
   }
 }
